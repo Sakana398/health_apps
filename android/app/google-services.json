@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "819296103358",
+    "project_id": "reflectify-5043c",
+    "storage_bucket": "reflectify-5043c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:819296103358:android:c675b3bc3ea150a1bda7ef",
+        "android_client_info": {
+          "package_name": "com.example.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFx4Kvb9ZwnJCjYltnEtqm4Py7iLT3kmI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:819296103358:android:abeb55a4c8a064ffbda7ef",
+        "android_client_info": {
+          "package_name": "com.example.health_apps"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFx4Kvb9ZwnJCjYltnEtqm4Py7iLT3kmI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:819296103358:android:55a0417bc36ff645bda7ef",
+        "android_client_info": {
+          "package_name": "com.flutterflow.finwallet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFx4Kvb9ZwnJCjYltnEtqm4Py7iLT3kmI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

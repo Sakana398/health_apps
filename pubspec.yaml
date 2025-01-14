@@ -1,0 +1,46 @@
+name: health_apps
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.3
+
+dependencies:
+  flutter:
+    sdk: flutter
+  fluttericon: ^2.0.0
+  google_fonts: ^6.2.1
+  google_nav_bar: ^5.0.6
+  icon: ^2.2.1
+  image_picker: ^1.1.2
+  intl: ^0.20.1
+  introduction_screen: ^3.0.2
+  shared_preferences: ^2.0.15
+  tabler_icons: ^2.5.0+1
+  typicons_flutter: ^0.5.0
+  url_launcher: ^6.1.0
+  cupertino_icons: ^1.0.8
+  carousel_slider: ^5.0.0
+  cloud_firestore: ^5.6.1
+  firebase_auth: ^5.4.0
+  firebase_core: ^3.10.0
+  firebase_database: ^11.3.0
+  firebase_storage: ^12.4.0
+
+dev_dependencies:
+  flutter_launcher_icons: ^0.14.2
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/appicon.png"
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
