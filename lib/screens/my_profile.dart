@@ -6,7 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:health_apps/firestore_data/appointment_history_list.dart';
 import 'package:health_apps/globals.dart';
+import 'package:health_apps/screens/qr_code_screen.dart';
+
 import 'package:image_picker/image_picker.dart';
+//import 'qr_code_screen.dart';
 
 import 'setting.dart';
 
@@ -93,24 +96,52 @@ class _MyProfileState extends State<MyProfile> {
                           padding: const EdgeInsets.only(top: 10, right: 7),
                           alignment: Alignment.topRight,
                           // edit user info button
-                          child: IconButton(
-                            icon: const Icon(
-                              Icons.settings,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const UserSettings(),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.settings,
+                                  color: Colors.white,
+                                  size: 20,
                                 ),
-                              ).then((value) {
-                                // reload page
-                                _getUser();
-                                setState(() {});
-                              });
-                            },
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const UserSettings(),
+                                    ),
+                                  ).then((value) {
+                                    // reload page
+                                    _getUser();
+                                    setState(() {});
+                                  });
+                                },
+                              ),
+                              // QR code Button
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.qr_code,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => QRCodeScreen(
+                                        userInfo: {
+                                          'name': name ?? 'Name Not Added',
+                                          'email': email ?? 'Email Not Added',
+                                          'phone': phone ?? 'Phone Not Added',
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                },
+                              )
+                            ],
                           ),
                         ),
                       ),
@@ -351,7 +382,7 @@ class _MyProfileState extends State<MyProfile> {
                               ),
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                     const SizedBox(
