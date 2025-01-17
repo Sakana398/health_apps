@@ -7,7 +7,12 @@ import 'package:health_apps/firestore_data/search_list.dart';
 import 'package:health_apps/firestore_data/top_rated_list.dart';
 import 'package:health_apps/model/card_model.dart';
 import 'package:health_apps/screens/explore_list.dart';
+import 'package:health_apps/screens/patient/mentalTraining.dart';
 import 'package:intl/intl.dart';
+import 'package:health_apps/screens/patient/community.dart';
+import 'package:health_apps/screens/patient/journal.dart';
+import 'package:health_apps/screens/patient/songs.dart';
+import 'package:health_apps/screens/patient/status.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -254,15 +259,58 @@ class _HomePageState extends State<HomePage> {
                               //   fit: BoxFit.fill,
                               // ),
                               ),
+                          // Button to navigate the other Screen from the card_model
                           child: TextButton(
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ExploreList(
-                                          type: cards[index].doctor,
-                                        )),
-                              );
+                              if (cards[index].doctor == "Mental Training") {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MentalTrainingScreen(), 
+                                  ),
+                                );
+                              } 
+                              else if (cards[index].doctor == "Status") {
+                                 Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => StatusScreen(), 
+                                  ),
+                                );
+                              }
+                              else if (cards[index].doctor == "Community"){
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CommunityScreen(), 
+                                  ),
+                                );
+                              }
+                              else if (cards[index].doctor == "Journal"){
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => JournalScreen(), 
+                                  ),
+                                );
+                              }
+                              else if (cards[index].doctor == "Songs"){
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => songsScreen(), 
+                                  ),
+                                );
+                              }
+                              else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ExploreList(
+                                            type: cards[index].doctor,
+                                          )),
+                                );
+                              }
                             },
                             style: ButtonStyle(
                               shape: WidgetStateProperty.all<
