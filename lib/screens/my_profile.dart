@@ -9,7 +9,7 @@ import 'package:health_apps/globals.dart';
 import 'package:health_apps/screens/qr_code_screen.dart';
 
 import 'package:image_picker/image_picker.dart';
-//import 'qr_code_screen.dart';
+
 
 import 'setting.dart';
 
