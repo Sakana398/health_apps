@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MentalTrainingScreen extends StatelessWidget {
-  const MentalTrainingScreen({Key? key}) : super(key: key);
+  const MentalTrainingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

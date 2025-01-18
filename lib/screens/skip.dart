@@ -25,12 +25,12 @@ class _SkipState extends State<Skip> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Search Doctors',
+              'Connect With Specialists',
               style:
                   GoogleFonts.lato(fontSize: 30, fontWeight: FontWeight.w900),
             ),
             Text(
-              'Find popular doctors nearby you',
+              'Reaching out to a mental health expert is a step towards healing',
               style: GoogleFonts.lato(
                   fontSize: 15,
                   color: Colors.grey[500],
@@ -42,7 +42,7 @@ class _SkipState extends State<Skip> {
       PageViewModel(
         title: '',
         image: Image.asset(
-          'assets/disease.png',
+          'assets/mental.png',
           //fit: BoxFit.cover,
         ),
         //body: "Search Doctors",
@@ -50,12 +50,12 @@ class _SkipState extends State<Skip> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Search Disease',
+              'Take control of your mental well-being.',
               style:
                   GoogleFonts.lato(fontSize: 30, fontWeight: FontWeight.w900),
             ),
             Text(
-              'Find information about disease',
+              'Cultivate emotional growth through training, journaling, and support from others',
               style: GoogleFonts.lato(
                   fontSize: 15,
                   color: Colors.grey[500],

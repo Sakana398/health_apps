@@ -159,7 +159,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         filled: true,
                         fillColor: Colors.grey[200],
-                        hintText: 'Search doctor',
+                        hintText: 'Search for your mental therapist',
                         hintStyle: GoogleFonts.lato(
                           color: Colors.black26,
                           fontSize: 18,
