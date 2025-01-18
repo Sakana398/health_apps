@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:health_apps/screens/patient/home_page.dart';
 
 import 'register.dart';
 import 'sign_in.dart';
@@ -84,11 +85,13 @@ class _FireBaseAuthState extends State<FireBaseAuth> {
                             width: double.infinity,
                             height: 50.0,
                             child: ElevatedButton(
-                              onPressed: () => _pushPage(context, const SignIn()),
+                              onPressed: () =>
+                                  _pushPage(context, const SignIn()),
                               style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.indigo[800], backgroundColor: Colors.indigo[800], elevation: 2,
+                                foregroundColor: Colors.indigo[800],
+                                backgroundColor: Colors.indigo[800],
+                                elevation: 2,
                                 shape: RoundedRectangleBorder(
-                                  
                                   borderRadius: BorderRadius.circular(32.0),
                                 ),
                               ),
@@ -111,11 +114,13 @@ class _FireBaseAuthState extends State<FireBaseAuth> {
                             width: double.infinity,
                             height: 50.0,
                             child: ElevatedButton(
-                              onPressed: () => _pushPage(context, const Register()),
+                              onPressed: () =>
+                                  _pushPage(context, const Register()),
                               style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.white, backgroundColor: Colors.white, elevation: 2,
+                                foregroundColor: Colors.white,
+                                backgroundColor: Colors.white,
+                                elevation: 2,
                                 shape: RoundedRectangleBorder(
-                                  
                                   borderRadius: BorderRadius.circular(32.0),
                                 ),
                               ),
@@ -130,7 +135,28 @@ class _FireBaseAuthState extends State<FireBaseAuth> {
                             ),
                           ),
                         ),
-                      
+                        // Skip for Now Text
+                        GestureDetector(
+                          onTap: () {
+                            // Navigate to the home page or main screen
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const HomePage(), // Replace with your main screen widget
+                              ),
+                            );
+                          },
+                          child: Text(
+                            "Skip for Now",
+                            style: GoogleFonts.lato(
+                              color: Colors.black,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                              decoration:
+                                  TextDecoration.underline, // Adds underline
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
