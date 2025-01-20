@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:health_apps/screens/patient/dailyQuestions.dart';
 import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Status extends StatefulWidget {
   const Status({super.key});
@@ -31,11 +32,39 @@ class _StatusState extends State<Status> {
     "Sun": {"Stress Level": 0.0, "Anxiety": 0.0, "Sleep Quality": 0.0},
   };
 
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    loadDataFromFirestore();
+  }
+
+  void loadDataFromFirestore() async {
+    DocumentSnapshot snapshot = await firestore.collection('user_data').doc('weekly_data').get();
+    if (snapshot.exists) {
+      setState(() {
+        weeklyScores = Map<String, int>.from(snapshot['weeklyScores']);
+        keyIndicators = (snapshot['keyIndicators'] as Map<String, dynamic>).map((day, indicators) {
+          return MapEntry(day, Map<String, double>.from(indicators));
+        });
+      });
+    }
+  }
+
+  void saveDataToFirestore() {
+    firestore.collection('user_data').doc('weekly_data').set({
+      'weeklyScores': weeklyScores,
+      'keyIndicators': keyIndicators,
+    });
+  }
+
   void updateKeyIndicators(String day, int severityScore, Map<String, double> indicators) {
     setState(() {
       weeklyScores[day] = severityScore;
       keyIndicators[day] = indicators;
     });
+    saveDataToFirestore();
   }
 
   String getCategory(int score) {
@@ -43,7 +72,6 @@ class _StatusState extends State<Status> {
     if (score <= 18) return "Mild";
     return "Severe";
   }
-  
 
   Color getCategoryColor(int score) {
     if (score <= 9) return Colors.green;
@@ -57,7 +85,7 @@ class _StatusState extends State<Status> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> daysOfWeek = weeklyScores.keys.toList();
+    List<String> daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
     int? currentScore = weeklyScores[daysOfWeek[selectedDayIndex]];
     String category = getCategory(currentScore!);
 
@@ -152,10 +180,14 @@ class _StatusState extends State<Status> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
-                      "Your symptoms indicate moderate anxiety levels today. Consider using breathing exercises or meditation sessions.",
+                    Text(
+                      category == "Normal"
+                          ? "Your symptoms are within normal levels. Keep maintaining your healthy habits!"
+                          : category == "Mild"
+                              ? "Your symptoms are mild. Consider some relaxation techniques or reaching out to a friend."
+                              : "Your symptoms are severe. It might help to speak with a counselor or use additional coping strategies.",
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16),
+                      style: const TextStyle(fontSize: 16),
                     ),
                   ],
                 ),
@@ -246,7 +278,7 @@ class _StatusState extends State<Status> {
                           const SizedBox(height: 8),
                         ],
                       );
-                    }).toList(),
+                    }),
                   ],
                 ),
               ),
