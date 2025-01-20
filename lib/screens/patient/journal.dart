@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:typicons_flutter/typicons_flutter.dart';
 
 class JournalScreen extends StatefulWidget {
   const JournalScreen({super.key});
