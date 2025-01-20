@@ -15,5 +15,5 @@ List<CardModel> cards = [
   CardModel("Mental Training", 0xFFec407a, Icons.psychology),
   CardModel("Community", 0xFFfbc02d, TablerIcons.friends),
   CardModel("Journal", 0xFF1565C0, Icons.book),
-  CardModel("Songs", 0xFF2E7D32, Icons.music_note),
+  CardModel("Clinic", 0xFF2E7D32, Icons.medical_services),
 ];

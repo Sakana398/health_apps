@@ -11,7 +11,7 @@ import 'package:health_apps/screens/patient/mentalTraining.dart';
 import 'package:intl/intl.dart';
 import 'package:health_apps/screens/patient/community.dart';
 import 'package:health_apps/screens/patient/journal.dart';
-import 'package:health_apps/screens/patient/songs.dart';
+import 'package:health_apps/screens/patient/maps.dart';
 import 'package:health_apps/screens/patient/status.dart';
 
 class HomePage extends StatefulWidget {
@@ -294,11 +294,11 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 );
                               }
-                              else if (cards[index].doctor == "Songs"){
+                              else if (cards[index].doctor == "Clinic"){
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => songsScreen(), 
+                                    builder: (context) => MapsPage(), 
                                   ),
                                 );
                               }

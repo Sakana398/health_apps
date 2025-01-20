@@ -1,0 +1,105 @@
+{
+    "offices": [
+      {
+        "address": "No. 2, Jalan 19/1, 46300 Petaling Jaya, Selangor, Malaysia",
+        "id": "mg-psychology",
+        "image": "https://www.mintygreen-wellness.com/images/mg-psychology.jpg",
+        "lat": 3.107, 
+        "lng": 101.635,
+        "name": "MG Psychology & Counselling Services Centre",
+        "phone": "+60 3-1234 5678",
+        "region": "asia"
+      },
+      {
+        "address": "Unit 3A-1, Level 3A, Menara BRDB, 285 Jalan Maarof, Bukit Bandaraya, 59000 Kuala Lumpur, Malaysia",
+        "id": "enrich-counselling",
+        "image": "https://www.mintygreen-wellness.com/images/enrich-counselling.jpg",
+        "lat": 3.139, 
+        "lng": 101.667,
+        "name": "Enrich Counselling & Therapy Centre",
+        "phone": "+60 3-2345 6789",
+        "region": "asia"
+      },
+      {
+        "address": "No. 10, Jalan 16/11, 46350 Petaling Jaya, Selangor, Malaysia",
+        "id": "inpsych",
+        "image": "https://www.mintygreen-wellness.com/images/inpsych.jpg",
+        "lat": 3.120, 
+        "lng": 101.640,
+        "name": "InPsych Psychological and Counselling Services",
+        "phone": "+60 3-3456 7890",
+        "region": "asia"
+      },
+      {
+        "address": "No. 5, Jalan 17/2, 46400 Petaling Jaya, Selangor, Malaysia",
+        "id": "relife-clinic",
+        "image": "https://www.relifeclinic.com/images/relife-clinic.jpg",
+        "lat": 3.115, 
+        "lng": 101.650,
+        "name": "RE:Life Mental Health Clinic",
+        "phone": "+60 3-4567 8901",
+        "region": "asia"
+      },
+      {
+        "address": "No. 3, Jalan SS12/1, 47500 Subang Jaya, Selangor, Malaysia",
+        "id": "sunway-mental-health",
+        "image": "https://www.sunwaymedical.com/images/mental-health-centre.jpg",
+        "lat": 3.073, 
+        "lng": 101.594,
+        "name": "Sunway Medical Centre - Mental Health Centre",
+        "phone": "+60 3-5678 9012",
+        "region": "asia"
+      },
+      {
+        "address": "No. 8, Jalan 14/29, 46100 Petaling Jaya, Selangor, Malaysia",
+        "id": "miasa",
+        "image": "https://www.miasa.org.my/images/miasa.jpg",
+        "lat": 3.107, 
+        "lng": 101.629,
+        "name": "Mental Illness Awareness and Support Association (MIASA)",
+        "phone": "+60 3-6789 0123",
+        "region": "asia"
+      },
+      {
+        "address": "No. 6, Jalan 13/6, 46200 Petaling Jaya, Selangor, Malaysia",
+        "id": "human-kind",
+        "image": "https://www.humankind.my/images/human-kind.jpg",
+        "lat": 3.104, 
+        "lng": 101.627,
+        "name": "HumanKind Community Counselling",
+        "phone": "+60 3-7890 1234",
+        "region": "asia"
+      },
+      {
+        "address": "No. 1, Jalan 11/4, 46200 Petaling Jaya, Selangor, Malaysia",
+        "id": "aloemind",
+        "image": "https://aloemind.com/images/aloemind.jpg",
+        "lat": 3.103, 
+        "lng": 101.626,
+        "name": "Aloe Mind",
+        "phone": "+60 3-8901 2345",
+        "region": "asia"
+      },
+      {
+        "address": "No. 4, Jalan 12/5, 46200 Petaling Jaya, Selangor, Malaysia",
+        "id": "mmas",
+        "image": "https://www.mmas.org.my/images/mmas.jpg",
+        "lat": 3.105, 
+        "lng": 101.628,
+        "name": "Malaysian Mental Health Association (MMHA)",
+        "phone": "+60 3-9012 3456",
+        "region": "asia"
+      },
+      {
+        "address": "No. 7, Jalan 15/8, 46200 Petaling Jaya, Selangor, Malaysia",
+        "id": "mentari",
+        "image": "https://www.mentari.gov.my/images/mentari.jpg",
+        "lat": 3.109, 
+        "lng": 101.632,
+        "name": "MENTARI Malaysia",
+        "phone": "+60 3-0123 4567",
+        "region": "asia"
+      }
+    ]
+  }
+  

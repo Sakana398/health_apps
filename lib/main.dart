@@ -10,12 +10,12 @@ import 'package:health_apps/screens/patient/appointments.dart';
 import 'package:health_apps/screens/patient/doctor_profile.dart';
 import 'package:health_apps/screens/patient/main_page_patient.dart';
 import 'package:health_apps/screens/skip.dart';
-
 import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Initialize Firebase for all platforms (Android, iOS, web, etc.)
+
+  // Initialize Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -32,17 +32,18 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  User? user;
+  User? _user;
 
   @override
   void initState() {
     super.initState();
-    _getUser();
+    _initializeUser();
   }
 
-  Future<void> _getUser() async {
+  // Retrieve the current authenticated user
+  void _initializeUser() {
     setState(() {
-      user = _auth.currentUser; // Safely retrieve the current user
+      _user = _auth.currentUser;
     });
   }
 
@@ -51,9 +52,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       initialRoute: '/',
       routes: {
-        // Define app routes
-        '/': (context) =>
-            user == null ? const Skip() : const DoctorOrPatient(),
+        '/': (context) => _user == null ? const Skip() : const DoctorOrPatient(),
         '/login': (context) => const FireBaseAuth(),
         '/home': (context) =>
             isDoctor ? const MainPageDoctor() : const MainPagePatient(),
@@ -61,7 +60,11 @@ class _MyAppState extends State<MyApp> {
         '/MyAppointments': (context) => const Appointments(),
         '/DoctorProfile': (context) => DoctorProfile(),
       },
-      theme: ThemeData(brightness: Brightness.light),
+      theme: ThemeData(
+        brightness: Brightness.light,
+        useMaterial3: true,
+        colorSchemeSeed: Colors.teal, // Updated color scheme for consistency
+      ),
       debugShowCheckedModeBanner: false,
     );
   }
