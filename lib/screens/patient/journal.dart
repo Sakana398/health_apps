@@ -11,14 +11,31 @@ class JournalScreen extends StatefulWidget {
 class _JournalScreenState extends State<JournalScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  String _formatTimestamp(Timestamp? timestamp) {
+    if (timestamp == null) return "Unknown date";
+    final date = timestamp.toDate();
+    return "${date.day}/${date.month}/${date.year}";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.white, // Light background
       appBar: AppBar(
-        title: const Text("Journal"),
         backgroundColor: Colors.lightBlueAccent,
-        
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          'Journal',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: StreamBuilder(
         stream: _firestore.collection('journals').snapshots(),
@@ -42,33 +59,87 @@ class _JournalScreenState extends State<JournalScreen> {
             itemCount: journalDocs.length,
             itemBuilder: (context, index) {
               final journal = journalDocs[index];
-              return ListTile(
-                title: Text(journal['title'] ?? "Untitled"),
-                subtitle: Text(
-                  journal['story'] ?? "No story provided.",
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => JournalDetailScreen(journal: journal),
+              return Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            JournalDetailScreen(journal: journal),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors
+                          .lightBlue[50], 
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 4,
+                          spreadRadius: 2,
+                        ),
+                      ],
                     ),
-                  );
-                },
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          journal['title'] ?? "Untitled",
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          journal['story'] ?? "No story provided.",
+                          maxLines:
+                              2, // Show a preview with a maximum of two lines
+                          overflow:
+                              TextOverflow.ellipsis, // Truncate with "..."
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.black54,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              _formatTimestamp(
+                                  journal['createdAt']), // Format the timestamp
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               );
             },
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color.fromARGB(255, 178, 227, 250),
+        backgroundColor: Colors.lightBlueAccent,
         onPressed: () {
           Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => const WriteJournalScreen()),
           );
         },
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add,
+        color: Colors.white,),
       ),
     );
   }
@@ -91,15 +162,20 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Write"),
-        
         backgroundColor: Colors.lightBlueAccent,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () => Navigator.of(context).pop(),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          'Write',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
           ),
-        ],
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -110,10 +186,19 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
               "Title",
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
-            TextField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                hintText: "Add a title to this entry",
+            const SizedBox(height: 8),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[200], // Light grey background
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              child: TextField(
+                controller: _titleController,
+                decoration: const InputDecoration(
+                  hintText: "Add a title to this entry",
+                  border: InputBorder.none,
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -121,13 +206,23 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
               "Story",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
+            const SizedBox(height: 8),
             Expanded(
-              child: TextField(
-                controller: _storyController,
-                maxLines: null,
-                expands: true,
-                decoration: const InputDecoration(
-                  hintText: "Write something...",
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[200], // Light grey background
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                child: TextField(
+                  controller: _storyController,
+                  maxLines: null,
+                  expands: true,
+                  decoration: const InputDecoration(
+                    hintText: "Write something...",
+                    border: InputBorder.none,
+                  ),
                 ),
               ),
             ),
@@ -135,9 +230,12 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
             ElevatedButton(
               onPressed: _submitJournal,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 178, 227, 250),
+                backgroundColor: Colors.lightBlueAccent,
               ),
-              child: const Text("Submit"),
+              child: const Text(
+                "Submit",
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         ),
@@ -177,9 +275,21 @@ class JournalDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(journal['title'] ?? "Untitled"),
-        backgroundColor: Colors.blue,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          journal['title'] ?? "Untitled",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Colors.lightBlueAccent,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -188,7 +298,7 @@ class JournalDetailScreen extends StatelessWidget {
           children: [
             Text(
               journal['title'] ?? "Untitled",
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             Text(
