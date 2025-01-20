@@ -37,28 +37,45 @@ class _StatusState extends State<Status> {
   @override
   void initState() {
     super.initState();
-    loadDataFromFirestore();
+    initializeData();
   }
 
-  void loadDataFromFirestore() async {
-    DocumentSnapshot snapshot = await firestore.collection('user_data').doc('weekly_data').get();
-    if (snapshot.exists) {
-      setState(() {
-        weeklyScores = Map<String, int>.from(snapshot['weeklyScores']);
-        keyIndicators = (snapshot['keyIndicators'] as Map<String, dynamic>).map((day, indicators) {
-          return MapEntry(day, Map<String, double>.from(indicators));
+  // Method to initialize data in Firestore
+  void initializeData() async {
+    try {
+      DocumentReference docRef = firestore.collection('user_data').doc('weekly_data');
+      DocumentSnapshot snapshot = await docRef.get();
+
+      if (snapshot.exists) {
+        setState(() {
+          weeklyScores = Map<String, int>.from(snapshot['weeklyScores']);
+          keyIndicators = (snapshot['keyIndicators'] as Map<String, dynamic>).map((day, indicators) {
+            return MapEntry(day, Map<String, double>.from(indicators));
+          });
         });
-      });
+      } else {
+        // Create the document with default values if it doesn't exist
+        await docRef.set({
+          'weeklyScores': weeklyScores,
+          'keyIndicators': keyIndicators,
+        });
+      }
+    } catch (e) {
+      print("Error initializing data: $e");
     }
   }
 
+  // Method to save data to Firestore
   void saveDataToFirestore() {
     firestore.collection('user_data').doc('weekly_data').set({
       'weeklyScores': weeklyScores,
       'keyIndicators': keyIndicators,
+    }).catchError((error) {
+      print("Error updating data: $error");
     });
   }
 
+  // Method to update key indicators and severity score
   void updateKeyIndicators(String day, int severityScore, Map<String, double> indicators) {
     setState(() {
       weeklyScores[day] = severityScore;
@@ -67,20 +84,18 @@ class _StatusState extends State<Status> {
     saveDataToFirestore();
   }
 
+  // Method to determine the category based on the score
   String getCategory(int score) {
     if (score <= 9) return "Normal";
     if (score <= 18) return "Mild";
     return "Severe";
   }
 
+  // Method to determine the category color
   Color getCategoryColor(int score) {
     if (score <= 9) return Colors.green;
     if (score <= 18) return Colors.yellow[700]!;
     return Colors.red;
-  }
-
-  double calculatePercentage(int score) {
-    return (score / 10) * 100;
   }
 
   @override
@@ -158,7 +173,7 @@ class _StatusState extends State<Status> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const Text(
-                      "Today's Severity Score",
+                      "Severity Score",
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 16),
