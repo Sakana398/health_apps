@@ -6,6 +6,8 @@ class CommunityScreen extends StatelessWidget {
   final TextEditingController _messageController = TextEditingController();
   final User? user = FirebaseAuth.instance.currentUser;
 
+  CommunityScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     if (user == null) {

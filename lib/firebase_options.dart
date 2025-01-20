@@ -47,14 +47,13 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyB3vfG0mrND01mAOC4OZ0pOwTQdgVjwJOs',
-    appId: '1:131647123287:web:a351efe36bd16bf9d89812',
-    messagingSenderId: '131647123287',
-    projectId: 'health-app-99603',
-    authDomain: 'health-app-99603.firebaseapp.com',
-    databaseURL: 'https://health-app-99603-default-rtdb.firebaseio.com',
-    storageBucket: 'health-app-99603.appspot.com',
-  );
+      apiKey: "AIzaSyB4XDup-HNMfWiMzuco0Piuptr03oTVIo4",
+      authDomain: "reflectify-5043c.firebaseapp.com",
+      projectId: "reflectify-5043c",
+      storageBucket: "reflectify-5043c.firebasestorage.app",
+      messagingSenderId: "819296103358",
+      appId: "1:819296103358:web:7bb269dd8115634cbda7ef",
+      measurementId: "G-X14LSFNC46");
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDFx4Kvb9ZwnJCjYltnEtqm4Py7iLT3kmI',
@@ -72,5 +71,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'reflectify-5043c.firebasestorage.app',
     iosBundleId: 'com.example.healthApps',
   );
-
 }
