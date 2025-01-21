@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:health_apps/globals.dart';
 import 'package:health_apps/model/update_user_details.dart';
 
 class UserDetails extends StatefulWidget {
@@ -18,21 +17,25 @@ class _UserDetailsState extends State<UserDetails> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   late User user;
 
-  // map of all the details
+  // Map to store user details
   Map<String, dynamic> details = {};
 
   Future<void> _getUser() async {
-    user = _auth.currentUser!;
+    try {
+      user = _auth.currentUser!;
 
-    DocumentSnapshot snap = await FirebaseFirestore.instance
-        .collection(isDoctor ? 'doctor' : 'patient')
-        .doc(user.uid)
-        .get();
+      // Fetch the user details from the 'user' collection
+      DocumentSnapshot snap = await FirebaseFirestore.instance
+          .collection('user')
+          .doc(user.uid)
+          .get();
 
-    setState(() {
-      details = snap.data() as Map<String, dynamic>;
-    });
-    print(snap.data());
+      setState(() {
+        details = snap.data() as Map<String, dynamic>;
+      });
+    } catch (e) {
+      print("Error fetching user details: $e");
+    }
   }
 
   @override
@@ -70,10 +73,9 @@ class _UserDetailsState extends State<UserDetails> {
                       value: value,
                     ),
                   ),
-                ).then((value) {
-                  // reload page
+                ).then((_) {
+                  // Reload user details after navigating back
                   _getUser();
-                  setState(() {});
                 });
               },
               child: Ink(
