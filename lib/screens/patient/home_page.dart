@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:health_apps/carousel_slider.dart';
 import 'package:health_apps/firestore_data/notification_list.dart';
-import 'package:health_apps/firestore_data/search_list.dart';
-import 'package:health_apps/firestore_data/top_rated_list.dart';
 import 'package:health_apps/model/card_model.dart';
 import 'package:health_apps/screens/explore_list.dart';
+import 'package:health_apps/screens/patient/chatbotPage.dart';
 import 'package:health_apps/screens/patient/mentalTraining.dart';
 import 'package:intl/intl.dart';
 import 'package:health_apps/screens/patient/community.dart';
@@ -23,7 +22,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  TextEditingController _doctorName = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User? user;
 
@@ -35,13 +33,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _getUser();
-    _doctorName = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _doctorName.dispose();
-    super.dispose();
   }
 
   @override
@@ -76,7 +67,6 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Container(
-                //width: MediaQuery.of(context).size.width/1.3,
                 alignment: Alignment.center,
                 child: Text(
                   message,
@@ -145,63 +135,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 25),
-                    child: TextFormField(
-                      textCapitalization: TextCapitalization.words,
-                      textInputAction: TextInputAction.search,
-                      controller: _doctorName,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.only(
-                            left: 20, top: 10, bottom: 10),
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                          borderSide: BorderSide.none,
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        hintText: 'Search for your mental therapist',
-                        hintStyle: GoogleFonts.lato(
-                          color: Colors.black26,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                        ),
-                        suffixIcon: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.blue.shade900.withOpacity(0.9),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: IconButton(
-                            iconSize: 20,
-                            splashRadius: 20,
-                            color: Colors.white,
-                            icon: const Icon(Icons.search),
-                            onPressed: () {},
-                          ),
-                        ),
-                      ),
-                      style: GoogleFonts.lato(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                      ),
-                      onFieldSubmitted: (String value) {
-                        setState(
-                          () {
-                            value.isEmpty
-                                ? Container()
-                                : Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => SearchList(
-                                        searchKey: value,
-                                      ),
-                                    ),
-                                  );
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                  Container(
                     padding: const EdgeInsets.only(left: 23, bottom: 10),
                     alignment: Alignment.centerLeft,
                     child: Text(
@@ -238,7 +171,6 @@ class _HomePageState extends State<HomePage> {
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       itemCount: cards.length,
                       itemBuilder: (context, index) {
-                        //print("images path: ${cards[index].cardImage.toString()}");
                         return Container(
                           margin: const EdgeInsets.only(right: 14),
                           height: 150,
@@ -253,56 +185,40 @@ class _HomePageState extends State<HomePage> {
                                   spreadRadius: 0.0,
                                   offset: const Offset(3, 3),
                                 ),
-                              ]
-                              // image: DecorationImage(
-                              //   image: AssetImage(cards[index].cardImage),
-                              //   fit: BoxFit.fill,
-                              // ),
-                              ),
-                          // Button to navigate the other Screen from the card_model
+                              ]),
                           child: TextButton(
                             onPressed: () {
-                              if (cards[index].doctor == "Mental Training") {
+                              if (cards[index].doctor == "Status") {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => MentalTrainingScreen(), 
+                                    builder: (context) => Status(),
                                   ),
                                 );
-                              } 
-                              else if (cards[index].doctor == "Status") {
-                                 Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Status(), 
-                                  ),
-                                );
-                              }
-                              else if (cards[index].doctor == "Community"){
+                              } else if (cards[index].doctor ==
+                                  "Mental Training") {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => CommunityScreen(), 
+                                    builder: (context) =>
+                                        MentalTrainingScreen(),
                                   ),
                                 );
-                              }
-                              else if (cards[index].doctor == "Journal"){
+                              } else if (cards[index].doctor == "ChatBot") {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => JournalScreen(), 
+                                    builder: (context) => Chatbotpage(),
                                   ),
                                 );
-                              }
-                              else if (cards[index].doctor == "Clinic"){
+                              } else if (cards[index].doctor == "Clinic") {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => MapsPage(), 
+                                    builder: (context) => MapsPage(),
                                   ),
                                 );
-                              }
-                              else {
+                              } else {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -313,7 +229,7 @@ class _HomePageState extends State<HomePage> {
                               }
                             },
                             style: ButtonStyle(
-                              shape: WidgetStateProperty.all<
+                              shape: MaterialStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
@@ -343,8 +259,8 @@ class _HomePageState extends State<HomePage> {
                                     cards[index].doctor,
                                     style: GoogleFonts.lato(
                                         color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14),
                                   ),
                                 ),
                               ],
@@ -353,31 +269,6 @@ class _HomePageState extends State<HomePage> {
                         );
                       },
                     ),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(left: 20),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Top Rated",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.lato(
-                          color: Colors.blue[800],
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(left: 15, right: 15),
-                    child: const TopRatedList(),
-                  ),
-                  const SizedBox(
-                    height: 20,
                   ),
                 ],
               ),

@@ -2,11 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:health_apps/screens/chat/chats.dart';
+import 'package:health_apps/screens/patient/community.dart'; // Import your Community page
+import 'package:health_apps/screens/patient/journal.dart';   // Import your Journal page
 import 'package:health_apps/screens/my_profile.dart';
-import 'package:health_apps/screens/patient/doctor_list.dart';
 import 'package:health_apps/screens/patient/home_page.dart';
-import 'package:health_apps/screens/patient/appointments.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
 
 class MainPagePatient extends StatefulWidget {
@@ -19,11 +18,12 @@ class MainPagePatient extends StatefulWidget {
 class _MainPagePatientState extends State<MainPagePatient> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedIndex = 0;
+
+  // Updated _pages list
   final List<Widget> _pages = [
     const HomePage(),
-    const DoctorsList(),
-    const Appointments(),
-    const Chats(),
+    CommunityScreen(), // Replacing DoctorsList with Community
+    const JournalScreen(),   // Replacing Appointments with Journal
     const MyProfile(),
   ];
 
@@ -91,26 +91,16 @@ class _MainPagePatientState extends State<MainPagePatient> {
                   GButton(
                     iconSize: 28,
                     icon: Icons.home,
-                    // text: 'Home',
                   ),
                   GButton(
-                    icon: Icons.search,
-                    // text: 'Search',
+                    icon: Icons.people, // Icon for Community
                   ),
                   GButton(
-                    iconSize: 28,
-                    icon: Typicons.calendar,
-                    // text: 'Appointments',
-                  ),
-                  GButton(
-                    iconSize: 28,
-                    icon: Icons.chat,
-                    // text: 'Chat',
+                    icon: Icons.book, // Icon for Journal
                   ),
                   GButton(
                     iconSize: 28,
                     icon: Typicons.user,
-                    // text: 'Profile',
                   ),
                 ],
                 selectedIndex: _selectedIndex,
