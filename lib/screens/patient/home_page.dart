@@ -227,11 +227,11 @@ class _HomePageState extends State<HomePage> {
                                         MentalTrainingScreen(),
                                   ),
                                 );
-                              } else if (cards[index].doctor == "ChatBot") {
+                              } else if (cards[index].doctor == "Journal") {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => Chatbotpage(),
+                                    builder: (context) => JournalScreen(),
                                   ),
                                 );
                               } else if (cards[index].doctor == "Clinic") {

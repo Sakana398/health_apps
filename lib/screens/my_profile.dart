@@ -326,80 +326,8 @@ class _MyProfileState extends State<MyProfile> {
                 ),
               ),
 
-              // Appointment history
-              Container(
-                margin: const EdgeInsets.only(left: 15, right: 15, top: 20),
-                padding: const EdgeInsets.only(left: 20, top: 20),
-                height: MediaQuery.of(context).size.height / 2,
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.blueGrey[50],
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(30),
-                          child: Container(
-                            height: 27,
-                            width: 27,
-                            color: Colors.green[900],
-                            child: const Icon(
-                              Icons.history,
-                              color: Colors.white,
-                              size: 16,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          "Appointment History",
-                          style: GoogleFonts.lato(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.only(right: 10),
-                            alignment: Alignment.centerRight,
-                            child: SizedBox(
-                              height: 30,
-                              child: TextButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const AppointmentHistoryList()));
-                                },
-                                child: const Text('View all'),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Expanded(
-                      child: Scrollbar(
-                        thumbVisibility: true,
-                        child: Container(
-                          padding: const EdgeInsets.only(right: 15),
-                          child: const AppointmentHistoryList(),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              
+              
               const SizedBox(
                 height: 30,
               ),

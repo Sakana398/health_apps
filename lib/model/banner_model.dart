@@ -10,7 +10,7 @@ class BannerModel {
 
 List<BannerModel> bannerCards = [
   BannerModel(
-      "Nothing can dim the light that shines from within",
+      "You deserve peace, even in chaos",
       [
         const Color(0xffa1d4ed),
         const Color(0xffc0eaff),

@@ -25,12 +25,12 @@ class _SkipState extends State<Skip> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Connect With Specialists',
+              'Choosing to care for yourself is the bravest step',
               style:
                   GoogleFonts.lato(fontSize: 30, fontWeight: FontWeight.w900),
             ),
             Text(
-              'Reaching out to a mental health expert is a step towards healing',
+              'Every step forward is progress, no matter how small',
               style: GoogleFonts.lato(
                   fontSize: 15,
                   color: Colors.grey[500],
