@@ -35,6 +35,29 @@ class _HomePageState extends State<HomePage> {
     _getUser();
   }
 
+  // To-Do List tasks
+  List<String> toDoList = [];
+
+  // Controller for the input field
+  final TextEditingController taskController = TextEditingController();
+
+  // Function to add a task to the list
+  void addTask() {
+    if (taskController.text.isNotEmpty) {
+      setState(() {
+        toDoList.add(taskController.text);
+        taskController.clear();
+      });
+    }
+  }
+
+  // Function to remove a task from the list
+  void removeTask(int index) {
+    setState(() {
+      toDoList.removeAt(index);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     String message = "Good";
@@ -229,7 +252,7 @@ class _HomePageState extends State<HomePage> {
                               }
                             },
                             style: ButtonStyle(
-                              shape: MaterialStateProperty.all<
+                              shape: WidgetStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
@@ -269,6 +292,76 @@ class _HomePageState extends State<HomePage> {
                         );
                       },
                     ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 20),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "To-Do List:",
+                      style: GoogleFonts.lato(
+                          color: Colors.blue[800],
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18),
+                    ),
+                  ),
+                  // Input field to add tasks
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: taskController,
+                            decoration: InputDecoration(
+                              hintText: "Enter a task",
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        ElevatedButton(
+                          onPressed: addTask,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue[800],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: const Text("Add", style: TextStyle(color: Colors.white)
+                          )
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Display the To-Do List
+                  ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: toDoList.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        leading: Checkbox(
+                          value: false,
+                          onChanged: (value) {
+                            // For future expansion to mark tasks as complete
+                          },
+                        ),
+                        title: Text(
+                          toDoList[index],
+                          style: GoogleFonts.lato(
+                            fontSize: 16,
+                          ),
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () => removeTask(index),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
