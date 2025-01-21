@@ -173,88 +173,228 @@ class _MyProfileState extends State<MyProfile> {
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
-              _buildInfoCard('Email', email ?? 'Email Not Added',
-                  Colors.red[900]!, Icons.mail_rounded),
-              const SizedBox(height: 20),
-              _buildInfoCard('Phone', phone ?? 'Phone Not Added',
-                  Colors.blue[800]!, Icons.phone),
-              const SizedBox(height: 20),
-              _buildBioCard(),
-              const SizedBox(height: 20),
+
+              const SizedBox(
+                height: 20,
+              ),
+
+              // user basic info
+              Container(
+                margin: const EdgeInsets.only(left: 15, right: 15),
+                padding: const EdgeInsets.only(left: 20),
+                height: MediaQuery.of(context).size.height / 7,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.blueGrey[50],
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // user email
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(30),
+                          child: Container(
+                            height: 27,
+                            width: 27,
+                            color: Colors.red[900],
+                            child: const Icon(
+                              Icons.mail_rounded,
+                              color: Colors.white,
+                              size: 16,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          user.email ?? 'Email Not Added',
+                          style: GoogleFonts.lato(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    // user phone number
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(30),
+                          child: Container(
+                            height: 27,
+                            width: 27,
+                            color: Colors.blue[800],
+                            child: const Icon(
+                              Icons.phone,
+                              color: Colors.white,
+                              size: 16,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          phone ?? 'Not Added',
+                          style: GoogleFonts.lato(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+              // user bio
+              Container(
+                margin: const EdgeInsets.only(left: 15, right: 15, top: 20),
+                padding: const EdgeInsets.only(left: 20, top: 20),
+                height: MediaQuery.of(context).size.height / 7,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.blueGrey[50],
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(30),
+                          child: Container(
+                            height: 27,
+                            width: 27,
+                            color: Colors.indigo[600],
+                            child: const Icon(
+                              Icons.edit,
+                              color: Colors.white,
+                              size: 16,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          'Bio',
+                          style: GoogleFonts.lato(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                    // bio
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.only(top: 10, left: 40),
+                      child: Text(
+                        bio ?? 'Not Added',
+                        style: GoogleFonts.lato(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black38,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+
+              // Appointment history
+              Container(
+                margin: const EdgeInsets.only(left: 15, right: 15, top: 20),
+                padding: const EdgeInsets.only(left: 20, top: 20),
+                height: MediaQuery.of(context).size.height / 2,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.blueGrey[50],
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(30),
+                          child: Container(
+                            height: 27,
+                            width: 27,
+                            color: Colors.green[900],
+                            child: const Icon(
+                              Icons.history,
+                              color: Colors.white,
+                              size: 16,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "Appointment History",
+                          style: GoogleFonts.lato(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.only(right: 10),
+                            alignment: Alignment.centerRight,
+                            child: SizedBox(
+                              height: 30,
+                              child: TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const AppointmentHistoryList()));
+                                },
+                                child: const Text('View all'),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Expanded(
+                      child: Scrollbar(
+                        thumbVisibility: true,
+                        child: Container(
+                          padding: const EdgeInsets.only(right: 15),
+                          child: const AppointmentHistoryList(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildInfoCard(
-      String title, String value, Color color, IconData icon) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 15),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: Colors.blueGrey[50],
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            backgroundColor: color,
-            child: Icon(icon, color: Colors.white, size: 16),
-          ),
-          const SizedBox(width: 10),
-          Text(
-            value,
-            style: GoogleFonts.lato(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.black54,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBioCard() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 15),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: Colors.blueGrey[50],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              CircleAvatar(
-                backgroundColor: Colors.indigo[600]!,
-                child: const Icon(Icons.edit, color: Colors.white, size: 16),
-              ),
-              const SizedBox(width: 10),
-              Text(
-                'Bio',
-                style: GoogleFonts.lato(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Text(
-            bio ?? 'Not Added',
-            style: GoogleFonts.lato(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: Colors.black38,
-            ),
-          ),
-        ],
       ),
     );
   }

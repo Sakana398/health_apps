@@ -22,8 +22,7 @@ class _MainPagePatientState extends State<MainPagePatient> {
   // Updated _pages list
   final List<Widget> _pages = [
     const HomePage(),
-    CommunityScreen(), // Replacing DoctorsList with Community
-    const JournalScreen(),   // Replacing Appointments with Journal
+    CommunityScreen(), // Replacing DoctorsList with Community   
     const MyProfile(),
   ];
 
@@ -94,9 +93,6 @@ class _MainPagePatientState extends State<MainPagePatient> {
                   ),
                   GButton(
                     icon: Icons.people, // Icon for Community
-                  ),
-                  GButton(
-                    icon: Icons.book, // Icon for Journal
                   ),
                   GButton(
                     iconSize: 28,
