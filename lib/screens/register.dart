@@ -22,8 +22,6 @@ class _RegisterState extends State<Register> {
   final TextEditingController _passwordConfirmController =
       TextEditingController();
 
-  int type = -1;
-
   FocusNode f1 = FocusNode();
   FocusNode f2 = FocusNode();
   FocusNode f3 = FocusNode();
@@ -138,8 +136,6 @@ class _RegisterState extends State<Register> {
               },
             ),
             const SizedBox(height: 20),
-            _buildAccountTypeButtons(),
-            const SizedBox(height: 20),
             _buildSignUpButton(),
             const SizedBox(height: 20),
             _buildSignInOption(),
@@ -184,50 +180,13 @@ class _RegisterState extends State<Register> {
     );
   }
 
-  Widget _buildAccountTypeButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        _buildAccountTypeButton('Doctor', 0),
-        const Text('or', style: TextStyle(fontSize: 16)),
-        _buildAccountTypeButton('Patient', 1),
-      ],
-    );
-  }
-
-  Widget _buildAccountTypeButton(String label, int accountType) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width / 2.5,
-      height: 50,
-      child: ElevatedButton(
-        onPressed: () => setState(() => type = accountType),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.grey[350],
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
-          side: BorderSide(
-            width: 5.0,
-            color: type == accountType ? Colors.black38 : Colors.transparent,
-          ),
-        ),
-        child: Text(
-          label,
-          style: GoogleFonts.lato(
-            color: type == accountType ? Colors.black38 : Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildSignUpButton() {
     return SizedBox(
       width: double.infinity,
       height: 50,
       child: ElevatedButton(
         onPressed: () async {
-          if (_formKey.currentState!.validate() && type != -1) {
+          if (_formKey.currentState!.validate()) {
             showLoaderDialog(context);
             await _registerAccount();
           }
@@ -340,9 +299,8 @@ class _RegisterState extends State<Register> {
         await user.updateDisplayName(_displayName.text);
         await user.sendEmailVerification();
 
-        String name =
-            type == 0 ? 'Dr. ${_displayName.text}' : _displayName.text;
-        String accountType = type == 0 ? 'doctor' : 'patient';
+        String name = _displayName.text;
+        String accountType = 'patient';  // Set account type to patient only
 
         Map<String, dynamic> userData = {
           'name': name,
@@ -354,16 +312,6 @@ class _RegisterState extends State<Register> {
             .collection('users')
             .doc(user.uid)
             .set(userData);
-
-        if (type == 0) {
-          globals.isDoctor = true;
-          userData.addAll({
-            'rating': double.parse(
-                (3 + Random().nextDouble() * 1.9).toStringAsPrecision(2)),
-            'openHour': "09:00",
-            'closeHour': "21:00",
-          });
-        }
 
         FirebaseFirestore.instance
             .collection(accountType)
