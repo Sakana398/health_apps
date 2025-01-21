@@ -4,8 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:health_apps/firestore_data/appointment_history_list.dart';
+import 'package:health_apps/globals.dart';
 import 'package:health_apps/screens/qr_code_screen.dart';
+
 import 'package:image_picker/image_picker.dart';
+
 
 import 'setting.dart';
 
@@ -21,20 +25,21 @@ class _MyProfileState extends State<MyProfile> {
   late User user;
   final FirebaseStorage storage = FirebaseStorage.instance;
 
-  // User details
+  // details
   String? email;
   String? name;
   String? phone;
   String? bio;
   String? specialization;
+  // default dp
   String image =
-      'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png'; // Default profile picture
+      'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png';
 
   Future<void> _getUser() async {
     user = _auth.currentUser!;
 
     DocumentSnapshot snap = await FirebaseFirestore.instance
-        .collection('users') // Unified collection for all users
+        .collection(isDoctor ? 'doctor' : 'patient')
         .doc(user.uid)
         .get();
 
@@ -90,6 +95,7 @@ class _MyProfileState extends State<MyProfile> {
                         child: Container(
                           padding: const EdgeInsets.only(top: 10, right: 7),
                           alignment: Alignment.topRight,
+                          // edit user info button
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
@@ -107,11 +113,13 @@ class _MyProfileState extends State<MyProfile> {
                                           const UserSettings(),
                                     ),
                                   ).then((value) {
+                                    // reload page
                                     _getUser();
                                     setState(() {});
                                   });
                                 },
                               ),
+                              // QR code Button
                               IconButton(
                                 icon: const Icon(
                                   Icons.qr_code,
@@ -137,6 +145,7 @@ class _MyProfileState extends State<MyProfile> {
                           ),
                         ),
                       ),
+                      // user name
                       Container(
                         alignment: Alignment.center,
                         height: MediaQuery.of(context).size.height / 6,
@@ -149,17 +158,19 @@ class _MyProfileState extends State<MyProfile> {
                           ),
                         ),
                       ),
+
                       Text(specialization == null ? '' : '($specialization)'),
                     ],
                   ),
+
+                  // user image
                   Container(
                     decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.teal.shade50,
-                        width: 5,
-                      ),
-                      shape: BoxShape.circle,
-                    ),
+                        border: Border.all(
+                          color: Colors.teal.shade50,
+                          width: 5,
+                        ),
+                        shape: BoxShape.circle),
                     child: InkWell(
                       onTap: () {
                         _showSelectionDialog(context);
@@ -314,81 +325,6 @@ class _MyProfileState extends State<MyProfile> {
                   ],
                 ),
               ),
-
-              // Appointment history
-              Container(
-                margin: const EdgeInsets.only(left: 15, right: 15, top: 20),
-                padding: const EdgeInsets.only(left: 20, top: 20),
-                height: MediaQuery.of(context).size.height / 2,
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.blueGrey[50],
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(30),
-                          child: Container(
-                            height: 27,
-                            width: 27,
-                            color: Colors.green[900],
-                            child: const Icon(
-                              Icons.history,
-                              color: Colors.white,
-                              size: 16,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          "Appointment History",
-                          style: GoogleFonts.lato(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.only(right: 10),
-                            alignment: Alignment.centerRight,
-                            child: SizedBox(
-                              height: 30,
-                              child: TextButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const AppointmentHistoryList()));
-                                },
-                                child: const Text('View all'),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Expanded(
-                      child: Scrollbar(
-                        thumbVisibility: true,
-                        child: Container(
-                          padding: const EdgeInsets.only(right: 15),
-                          child: const AppointmentHistoryList(),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
               const SizedBox(
                 height: 30,
               ),
@@ -399,7 +335,23 @@ class _MyProfileState extends State<MyProfile> {
     );
   }
 
-  Future _showSelectionDialog(BuildContext context) async {
+  // for picking image from device
+  Future selectOrTakePhoto(ImageSource imageSource) async {
+    XFile? file =
+        await ImagePicker().pickImage(source: imageSource, imageQuality: 12);
+
+    if (file != null) {
+      var im = await file.readAsBytes();
+      // upload image to cloud
+      await uploadFile(im, file.name);
+      return;
+    }
+
+    print('No photo was selected or taken');
+  }
+
+  // dialog for option of take photo from
+  Future _showSelectionDialog(BuildContext conntext) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -426,32 +378,37 @@ class _MyProfileState extends State<MyProfile> {
     );
   }
 
-  Future selectOrTakePhoto(ImageSource imageSource) async {
-    XFile? file =
-        await ImagePicker().pickImage(source: imageSource, imageQuality: 12);
-
-    if (file != null) {
-      var im = await file.readAsBytes();
-      await uploadFile(im, file.name);
-    }
-  }
-
+  // upload image
   Future uploadFile(Uint8List img, String fileName) async {
     final destination = 'dp/${user.displayName}-$fileName';
     try {
       final ref = storage.ref(destination);
+
       UploadTask uploadTask = ref.putData(img);
       TaskSnapshot snapshot = await uploadTask;
 
       String downloadUrl = await snapshot.ref.getDownloadURL();
+      print('image url : $downloadUrl');
+
       setState(() {
-        image = Uri.decodeFull(downloadUrl);
+        image = Uri.decodeFull(downloadUrl.toString());
       });
+      FirebaseFirestore.instance
+          .collection(isDoctor ? 'doctor' : 'patient')
+          .doc(user.uid)
+          .set({
+        'profilePhoto': downloadUrl,
+      }, SetOptions(merge: true));
+
+      // main user data
       FirebaseFirestore.instance.collection('users').doc(user.uid).set({
         'profilePhoto': downloadUrl,
       }, SetOptions(merge: true));
+
+      print("uploaded !!!");
     } catch (e) {
-      print(e);
+      print(e.toString());
+      print('error occured');
     }
   }
 }
