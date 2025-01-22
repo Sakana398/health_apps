@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:health_apps/screens/patient/training1.dart';
-import 'package:health_apps/screens/patient/training2.dart';
-import 'package:health_apps/screens/patient/training3.dart';
-import 'package:health_apps/screens/patient/training4.dart';
+import 'package:health_apps/screens/user/training1.dart';
+import 'package:health_apps/screens/user/training2.dart';
+import 'package:health_apps/screens/user/training3.dart';
+import 'package:health_apps/screens/user/training4.dart';
 
 class MentalTrainingScreen extends StatelessWidget {
   const MentalTrainingScreen({super.key});

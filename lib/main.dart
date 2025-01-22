@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:health_apps/screens/MainPageNavigation.dart';
 import 'package:health_apps/screens/firebase_auth.dart';
 import 'package:health_apps/screens/my_profile.dart';
-import 'package:health_apps/screens/patient/main_page_patient.dart';
+import 'package:health_apps/screens/user/main_page_patient.dart';
 import 'package:health_apps/screens/skip.dart';
 import 'firebase_options.dart';
 

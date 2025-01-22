@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:health_apps/screens/patient/community.dart'; 
-import 'package:health_apps/screens/patient/home_page.dart';
+import 'package:health_apps/screens/user/community.dart'; 
+import 'package:health_apps/screens/user/home_page.dart';
 import 'package:health_apps/screens/sign_in.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
 

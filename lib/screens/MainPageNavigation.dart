@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:health_apps/screens/patient/main_page_patient.dart';
+import 'package:health_apps/screens/user/main_page_patient.dart';
 
 class MainPageNavigation extends StatefulWidget {
   const MainPageNavigation({super.key});

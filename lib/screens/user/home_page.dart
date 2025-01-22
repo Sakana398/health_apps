@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:health_apps/carousel_slider.dart';
 import 'package:health_apps/model/card_model.dart';
-import 'package:health_apps/screens/patient/ChatBot.dart';
-import 'package:health_apps/screens/patient/mentalTraining.dart';
+import 'package:health_apps/screens/user/ChatBot.dart';
+import 'package:health_apps/screens/user/mentalTraining.dart';
 import 'package:intl/intl.dart';
-import 'package:health_apps/screens/patient/journal.dart';
-import 'package:health_apps/screens/patient/maps.dart';
-import 'package:health_apps/screens/patient/status.dart';
+import 'package:health_apps/screens/user/journal.dart';
+import 'package:health_apps/screens/user/maps.dart';
+import 'package:health_apps/screens/user/status.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
