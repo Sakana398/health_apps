@@ -58,42 +58,52 @@ class _MyProfileState extends State<MyProfile> {
   }
 
   Future<void> _updateUserProfile() async {
+    if (!RegExp(r'^\d+$').hasMatch(phoneController.text)) {
+        setState(() {
+            phoneError = 'Phone number must contain only digits.';
+        });
+        return;
+    }
     if (!phoneController.text.startsWith('01')) {
-      setState(() {
-        phoneError = 'Invalid phone number. Must start with 01';
-      });
-      return;
+        setState(() {
+            phoneError = 'Invalid phone number. Must start with 01.';
+        });
+        return;
     }
     if (phoneController.text.length < 10) {
-      setState(() {
-        phoneError = 'Phone number must be at least 10 digits.';
-      });
-      return;
+        setState(() {
+            phoneError = 'Phone number must be at least 10 digits.';
+        });
+        return;
     }
     if (phoneController.text.length > 11) {
-      setState(() {
-        phoneError = 'Phone number cannot exceed 11 digits';
-      });
-      return;
+        setState(() {
+            phoneError = 'Phone number cannot exceed 11 digits.';
+        });
+        return;
     }
-    try {
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
-        'phone': phoneController.text,
-        'bio': bioController.text,
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile updated successfully!')),
-      );
-      _getUser(); // Refresh the data
-      setState(() {
+
+    // Clear error if all conditions are met
+    setState(() {
         phoneError = null;
-      });
+    });
+
+    try {
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+            'phone': phoneController.text,
+            'bio': bioController.text,
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Profile updated successfully!')),
+        );
+        _getUser(); // Refresh the data
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to update profile.')),
-      );
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to update profile.')),
+        );
     }
-  }
+}
+
 
   Future<void> _logout() async {
     await _auth.signOut();
