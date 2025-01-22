@@ -13,7 +13,7 @@ class MapsPage extends StatefulWidget {
 class _MapsPageState extends State<MapsPage> {
   late GoogleMapController mapController;
   final Map<String, Marker> _markers = {};
-  final LatLng _center = const LatLng(0, 0); // Default center of the map
+
 
   // Method to handle map creation and fetch markers from assets location.json
   Future<void> _onMapCreated(GoogleMapController controller) async {

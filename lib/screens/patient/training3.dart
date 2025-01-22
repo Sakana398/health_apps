@@ -34,7 +34,7 @@ class Training3 extends StatelessWidget {
               height: 250,
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('training3.jpg'), // Replace with your image asset
+                  image: AssetImage('assets/training3.jpg'), // Replace with your image asset
                   fit: BoxFit.cover,
                 ),
               ),
