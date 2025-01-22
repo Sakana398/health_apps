@@ -3,18 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:health_apps/screens/patient/community.dart'; 
-import 'package:health_apps/screens/my_profile.dart';
 import 'package:health_apps/screens/patient/home_page.dart';
+import 'package:health_apps/screens/sign_in.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
 
-class MainPagePatient extends StatefulWidget {
-  const MainPagePatient({super.key});
+class SkipMainPage extends StatefulWidget {
+  const SkipMainPage({super.key});
+
+  
 
   @override
-  State<MainPagePatient> createState() => _MainPagePatientState();
+  State<SkipMainPage> createState() => _SkipMainPageState();
 }
 
-class _MainPagePatientState extends State<MainPagePatient> {
+class _SkipMainPageState extends State<SkipMainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedIndex = 0;
 
@@ -22,7 +24,7 @@ class _MainPagePatientState extends State<MainPagePatient> {
   final List<Widget> _pages = [
     const HomePage(),
     CommunityScreen(),   
-    const MyProfile(),
+    const SignIn(),
   ];
 
   final FirebaseAuth _auth = FirebaseAuth.instance;

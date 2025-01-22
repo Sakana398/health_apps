@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:health_apps/screens/patient/home_page.dart';
+import 'package:health_apps/screens/patient/main_page_patient.dart';
+import 'package:health_apps/screens/skip_main_page.dart';
 
 import 'register.dart';
 import 'sign_in.dart';
@@ -142,7 +144,7 @@ class _FireBaseAuthState extends State<FireBaseAuth> {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    const HomePage(), // Replace with your main screen widget
+                                    const SkipMainPage(), // Replace with your main screen widget
                               ),
                             );
                           },
