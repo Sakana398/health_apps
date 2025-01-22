@@ -189,6 +189,12 @@ class _StatusState extends State<Status> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.lightBlueAccent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: const Text(
           'Mental Health Progress',
           style: TextStyle(
@@ -197,7 +203,6 @@ class _StatusState extends State<Status> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.lightBlueAccent,
       ),
       body: SingleChildScrollView(
         child: Column(
