@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:health_apps/services/ChatBot_service.dart';
 
 class ChatBot extends StatefulWidget {
+  const ChatBot({super.key});
+
   @override
   _ChatbotState createState() => _ChatbotState();
 }
@@ -78,11 +80,11 @@ class _ChatbotState extends State<ChatBot> {
                 SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: sendMessage,
-                  child: Icon(Icons.send),
                   style: ElevatedButton.styleFrom(
                     shape: CircleBorder(),
                     padding: EdgeInsets.all(14),
                   ),
+                  child: Icon(Icons.send),
                 )
               ],
             ),

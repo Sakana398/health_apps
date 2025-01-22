@@ -50,8 +50,8 @@ class _MapsPageState extends State<MapsPage> {
       body: GoogleMap(
         onMapCreated: _onMapCreated,
         initialCameraPosition: const CameraPosition(
-          target: LatLng(0, 0), // Center the map initially
-          zoom: 2,               // Default zoom level
+          target: LatLng(3.1319, 101.640), // Center the map initially
+          zoom: 12,               // Default zoom level
         ),
         markers: _markers.values.toSet(),
       ),

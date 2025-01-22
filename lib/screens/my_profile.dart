@@ -8,7 +8,6 @@ import 'package:health_apps/screens/qr_code_screen.dart';
 
 import 'package:image_picker/image_picker.dart';
 
-import 'setting.dart';
 
 class MyProfile extends StatefulWidget {
   const MyProfile({super.key});
