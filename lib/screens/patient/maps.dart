@@ -43,9 +43,20 @@ class _MapsPageState extends State<MapsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mental Health Clinics Locations'),
-        elevation: 2,
-        backgroundColor: Colors.green[700],
+        backgroundColor: Colors.lightBlueAccent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          'Mental Health Clinic Location',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: GoogleMap(
         onMapCreated: _onMapCreated,
