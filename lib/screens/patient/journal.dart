@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class JournalScreen extends StatefulWidget {
   const JournalScreen({super.key});
@@ -17,10 +18,24 @@ class _JournalScreenState extends State<JournalScreen> {
     return "${date.day}/${date.month}/${date.year}";
   }
 
+  Stream<QuerySnapshot> _getUserJournals() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      return _firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('journals')
+          .orderBy('createdAt', descending: true)
+          .snapshots();
+    } else {
+      return const Stream.empty();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Light background
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.lightBlueAccent,
         elevation: 0,
@@ -38,7 +53,7 @@ class _JournalScreenState extends State<JournalScreen> {
         ),
       ),
       body: StreamBuilder(
-        stream: _firestore.collection('journals').snapshots(),
+        stream: _getUserJournals(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -73,8 +88,7 @@ class _JournalScreenState extends State<JournalScreen> {
                   },
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors
-                          .lightBlue[50], 
+                      color: Colors.lightBlue[50],
                       borderRadius: BorderRadius.circular(8),
                       boxShadow: [
                         BoxShadow(
@@ -99,10 +113,8 @@ class _JournalScreenState extends State<JournalScreen> {
                         const SizedBox(height: 8),
                         Text(
                           journal['story'] ?? "No story provided.",
-                          maxLines:
-                              2, // Show a preview with a maximum of two lines
-                          overflow:
-                              TextOverflow.ellipsis, // Truncate with "..."
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             fontSize: 16,
                             color: Colors.black54,
@@ -113,8 +125,7 @@ class _JournalScreenState extends State<JournalScreen> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text(
-                              _formatTimestamp(
-                                  journal['createdAt']), // Format the timestamp
+                              _formatTimestamp(journal['createdAt']),
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: Colors.grey,
@@ -138,8 +149,10 @@ class _JournalScreenState extends State<JournalScreen> {
             MaterialPageRoute(builder: (context) => const WriteJournalScreen()),
           );
         },
-        child: const Icon(Icons.add,
-        color: Colors.white,),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
     );
   }
@@ -156,6 +169,39 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _storyController = TextEditingController();
+
+  Future<void> _submitJournal() async {
+    if (_titleController.text.isEmpty || _storyController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Title and story cannot be empty.")),
+      );
+      return;
+    }
+
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        await _firestore
+            .collection('users')
+            .doc(user.uid)
+            .collection('journals')
+            .add({
+          'title': _titleController.text,
+          'story': _storyController.text,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+
+        Navigator.of(context).pop(); // Go back to the list screen
+      } else {
+        throw Exception("User not authenticated.");
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error saving journal: $e")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +235,7 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
             const SizedBox(height: 8),
             Container(
               decoration: BoxDecoration(
-                color: Colors.grey[200], // Light grey background
+                color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(8),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -210,11 +256,10 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.grey[200], // Light grey background
+                  color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(8),
                 ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 child: TextField(
                   controller: _storyController,
                   maxLines: null,
@@ -242,29 +287,6 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
       ),
     );
   }
-
-  Future<void> _submitJournal() async {
-    if (_titleController.text.isEmpty || _storyController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Title and story cannot be empty.")),
-      );
-      return;
-    }
-
-    try {
-      await _firestore.collection('journals').add({
-        'title': _titleController.text,
-        'story': _storyController.text,
-        'createdAt': FieldValue.serverTimestamp(),
-      });
-
-      Navigator.of(context).pop(); // Go back to the list screen
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error saving journal: $e")),
-      );
-    }
-  }
 }
 
 class JournalDetailScreen extends StatelessWidget {
@@ -283,7 +305,7 @@ class JournalDetailScreen extends StatelessWidget {
         ),
         title: Text(
           journal['title'] ?? "Untitled",
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 24,
             fontWeight: FontWeight.bold,
