@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="google_maps_in_flutter"
+        android:label="Reflectify"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
@@ -9,7 +9,7 @@
                android:value="AIzaSyCpjXL2cN42aHHIsByRpNAlkk1dJylp0uM"/>
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.health_apps.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:taskAffinity=""
