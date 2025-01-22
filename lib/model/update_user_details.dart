@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
-import 'package:health_apps/globals.dart';
+
 
 class UpdateUserDetails extends StatefulWidget {
   final String label;
@@ -96,7 +96,7 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
               child: ElevatedButton(
                 onPressed: () {
                   FocusScope.of(context).unfocus();
-                  updateData();
+                  //updateData();
                   Navigator.of(context).pop(context);
                 },
                 style: ElevatedButton.styleFrom(
@@ -122,7 +122,7 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
 
   Future<void> updateData() async {
     FirebaseFirestore.instance
-        .collection(isDoctor ? 'doctor' : 'patient')
+        .collection('patient')
         .doc(userID)
         .set({
       widget.field: _textcontroller.text,

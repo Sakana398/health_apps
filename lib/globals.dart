@@ -1,3 +1,0 @@
-library;
-bool isDoctor = false;
-

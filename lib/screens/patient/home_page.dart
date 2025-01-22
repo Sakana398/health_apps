@@ -2,13 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:health_apps/carousel_slider.dart';
-import 'package:health_apps/firestore_data/notification_list.dart';
 import 'package:health_apps/model/card_model.dart';
-import 'package:health_apps/screens/explore_list.dart';
-import 'package:health_apps/screens/patient/chatbotPage.dart';
 import 'package:health_apps/screens/patient/mentalTraining.dart';
 import 'package:intl/intl.dart';
-import 'package:health_apps/screens/patient/community.dart';
 import 'package:health_apps/screens/patient/journal.dart';
 import 'package:health_apps/screens/patient/maps.dart';
 import 'package:health_apps/screens/patient/status.dart';
@@ -102,16 +98,6 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(
                 width: 55,
-              ),
-              IconButton(
-                splashRadius: 20,
-                icon: const Icon(Icons.notifications_active),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (contex) => const NotificationList()));
-                },
               ),
             ],
           ),
@@ -241,15 +227,7 @@ class _HomePageState extends State<HomePage> {
                                     builder: (context) => MapsPage(),
                                   ),
                                 );
-                              } else {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ExploreList(
-                                            type: cards[index].doctor,
-                                          )),
-                                );
-                              }
+                              } 
                             },
                             style: ButtonStyle(
                               shape: WidgetStateProperty.all<

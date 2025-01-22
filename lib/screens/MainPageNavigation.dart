@@ -1,18 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:health_apps/globals.dart';
-import 'package:health_apps/screens/doctor/main_page_doctor.dart';
 import 'package:health_apps/screens/patient/main_page_patient.dart';
 
-class DoctorOrPatient extends StatefulWidget {
-  const DoctorOrPatient({super.key});
+class MainPageNavigation extends StatefulWidget {
+  const MainPageNavigation({super.key});
 
   @override
-  State<DoctorOrPatient> createState() => _DoctorOrPatientState();
+  State<MainPageNavigation> createState() => _MainPageNavigationState();
 }
 
-class _DoctorOrPatientState extends State<DoctorOrPatient> {
+class _MainPageNavigationState extends State<MainPageNavigation> {
   bool _isLoading = true;
   void _setUser() async {
     final User? user = FirebaseAuth.instance.currentUser;
@@ -21,10 +19,9 @@ class _DoctorOrPatientState extends State<DoctorOrPatient> {
         .doc(user!.uid)
         .get();
 
-    var basicInfo = snap.data() as Map<String, dynamic>;
+    //var basicInfo = snap.data() as Map<String, dynamic>;
 
-    isDoctor = basicInfo['type'] == 'doctor' ? true : false;
-    print('isdoctor : $isDoctor');
+   
     setState(() {
       _isLoading = false;
     });
@@ -40,8 +37,6 @@ class _DoctorOrPatientState extends State<DoctorOrPatient> {
   Widget build(BuildContext context) {
     return _isLoading
         ? const Scaffold(body: Center(child: CircularProgressIndicator()))
-        : isDoctor
-            ? const MainPageDoctor()
-            : const MainPagePatient();
+        : const MainPagePatient();
   }
 }

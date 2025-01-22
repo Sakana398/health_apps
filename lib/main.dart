@@ -1,13 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:health_apps/globals.dart';
-import 'package:health_apps/screens/doctor/main_page_doctor.dart';
-import 'package:health_apps/screens/doctor_or_patient.dart';
+import 'package:health_apps/screens/MainPageNavigation.dart';
 import 'package:health_apps/screens/firebase_auth.dart';
 import 'package:health_apps/screens/my_profile.dart';
-import 'package:health_apps/screens/patient/appointments.dart';
-import 'package:health_apps/screens/patient/doctor_profile.dart';
 import 'package:health_apps/screens/patient/main_page_patient.dart';
 import 'package:health_apps/screens/skip.dart';
 import 'firebase_options.dart';
@@ -52,13 +48,11 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       initialRoute: '/',
       routes: {
-        '/': (context) => _user == null ? const Skip() : const DoctorOrPatient(),
+        '/': (context) => _user == null ? const Skip() : const MainPageNavigation(),
         '/login': (context) => const FireBaseAuth(),
         '/home': (context) =>
-            isDoctor ? const MainPageDoctor() : const MainPagePatient(),
+            const MainPagePatient(),
         '/profile': (context) => const MyProfile(),
-        '/MyAppointments': (context) => const Appointments(),
-        '/DoctorProfile': (context) => DoctorProfile(),
       },
       theme: ThemeData(
         brightness: Brightness.light,

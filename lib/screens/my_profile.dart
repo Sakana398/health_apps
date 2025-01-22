@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:health_apps/globals.dart';
 import 'package:health_apps/screens/qr_code_screen.dart';
 
 import 'package:image_picker/image_picker.dart';
@@ -38,7 +37,7 @@ class _MyProfileState extends State<MyProfile> {
     user = _auth.currentUser!;
 
     DocumentSnapshot snap = await FirebaseFirestore.instance
-        .collection(isDoctor ? 'doctor' : 'patient')
+        .collection('patient')
         .doc(user.uid)
         .get();
 
@@ -392,12 +391,12 @@ class _MyProfileState extends State<MyProfile> {
       setState(() {
         image = Uri.decodeFull(downloadUrl.toString());
       });
-      FirebaseFirestore.instance
+      /*FirebaseFirestore.instance
           .collection(isDoctor ? 'doctor' : 'patient')
           .doc(user.uid)
           .set({
         'profilePhoto': downloadUrl,
-      }, SetOptions(merge: true));
+      }, SetOptions(merge: true));*/
 
       // main user data
       FirebaseFirestore.instance.collection('users').doc(user.uid).set({
