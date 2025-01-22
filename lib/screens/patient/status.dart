@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:health_apps/screens/patient/dailyQuestions.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Status extends StatefulWidget {
   const Status({super.key});
@@ -23,16 +24,87 @@ class _StatusState extends State<Status> {
   };
 
   Map<String, Map<String, double>> keyIndicators = {
-    "Mon": {"Stress Level": 0.0, "Anxiety": 0.0, "Sleep Quality": 0.0},
-    "Tue": {"Stress Level": 0.0, "Anxiety": 0.0, "Sleep Quality": 0.0},
-    "Wed": {"Stress Level": 0.0, "Anxiety": 0.0, "Sleep Quality": 0.0},
-    "Thu": {"Stress Level": 0.0, "Anxiety": 0.0, "Sleep Quality": 0.0},
-    "Fri": {"Stress Level": 0.0, "Anxiety": 0.0, "Sleep Quality": 0.0},
-    "Sat": {"Stress Level": 0.0, "Anxiety": 0.0, "Sleep Quality": 0.0},
-    "Sun": {"Stress Level": 0.0, "Anxiety": 0.0, "Sleep Quality": 0.0},
+    "Mon": {
+      "Mood": 0.0,
+      "Stress Level": 0.0,
+      "Sleep Quality": 0.0,
+      "Energy Level": 0.0,
+      "Social Engagement": 0.0,
+      "Focus": 0.0,
+      "Coping Ability": 0.0,
+      "Sense of Purpose": 0.0,
+      "Physical Activity": 0.0,
+    },
+    "Tue": {
+      "Mood": 0.0,
+      "Stress Level": 0.0,
+      "Sleep Quality": 0.0,
+      "Energy Level": 0.0,
+      "Social Engagement": 0.0,
+      "Focus": 0.0,
+      "Coping Ability": 0.0,
+      "Sense of Purpose": 0.0,
+      "Physical Activity": 0.0,
+    },
+    "Wed": {
+      "Mood": 0.0,
+      "Stress Level": 0.0,
+      "Sleep Quality": 0.0,
+      "Energy Level": 0.0,
+      "Social Engagement": 0.0,
+      "Focus": 0.0,
+      "Coping Ability": 0.0,
+      "Sense of Purpose": 0.0,
+      "Physical Activity": 0.0,
+    },
+    "Thu": {
+      "Mood": 0.0,
+      "Stress Level": 0.0,
+      "Sleep Quality": 0.0,
+      "Energy Level": 0.0,
+      "Social Engagement": 0.0,
+      "Focus": 0.0,
+      "Coping Ability": 0.0,
+      "Sense of Purpose": 0.0,
+      "Physical Activity": 0.0,
+    },
+    "Fri": {
+      "Mood": 0.0,
+      "Stress Level": 0.0,
+      "Sleep Quality": 0.0,
+      "Energy Level": 0.0,
+      "Social Engagement": 0.0,
+      "Focus": 0.0,
+      "Coping Ability": 0.0,
+      "Sense of Purpose": 0.0,
+      "Physical Activity": 0.0,
+    },
+    "Sat": {
+      "Mood": 0.0,
+      "Stress Level": 0.0,
+      "Sleep Quality": 0.0,
+      "Energy Level": 0.0,
+      "Social Engagement": 0.0,
+      "Focus": 0.0,
+      "Coping Ability": 0.0,
+      "Sense of Purpose": 0.0,
+      "Physical Activity": 0.0,
+    },
+    "Sun": {
+      "Mood": 0.0,
+      "Stress Level": 0.0,
+      "Sleep Quality": 0.0,
+      "Energy Level": 0.0,
+      "Social Engagement": 0.0,
+      "Focus": 0.0,
+      "Coping Ability": 0.0,
+      "Sense of Purpose": 0.0,
+      "Physical Activity": 0.0,
+    },
   };
 
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
   void initState() {
@@ -40,21 +112,24 @@ class _StatusState extends State<Status> {
     initializeData();
   }
 
-  // Method to initialize data in Firestore
   void initializeData() async {
     try {
-      DocumentReference docRef = firestore.collection('user_data').doc('weekly_data');
+      User? user = auth.currentUser;
+      if (user == null) return;
+
+      String userId = user.uid;
+      DocumentReference docRef = firestore.collection('user_data').doc(userId);
       DocumentSnapshot snapshot = await docRef.get();
 
       if (snapshot.exists) {
         setState(() {
           weeklyScores = Map<String, int>.from(snapshot['weeklyScores']);
-          keyIndicators = (snapshot['keyIndicators'] as Map<String, dynamic>).map((day, indicators) {
+          keyIndicators = (snapshot['keyIndicators'] as Map<String, dynamic>)
+              .map((day, indicators) {
             return MapEntry(day, Map<String, double>.from(indicators));
           });
         });
       } else {
-        // Create the document with default values if it doesn't exist
         await docRef.set({
           'weeklyScores': weeklyScores,
           'keyIndicators': keyIndicators,
@@ -65,9 +140,12 @@ class _StatusState extends State<Status> {
     }
   }
 
-  // Method to save data to Firestore
   void saveDataToFirestore() {
-    firestore.collection('user_data').doc('weekly_data').set({
+    User? user = auth.currentUser;
+    if (user == null) return;
+
+    String userId = user.uid;
+    firestore.collection('user_data').doc(userId).set({
       'weeklyScores': weeklyScores,
       'keyIndicators': keyIndicators,
     }).catchError((error) {
@@ -75,8 +153,8 @@ class _StatusState extends State<Status> {
     });
   }
 
-  // Method to update key indicators and severity score
-  void updateKeyIndicators(String day, int severityScore, Map<String, double> indicators) {
+  void updateKeyIndicators(
+      String day, int severityScore, Map<String, double> indicators) {
     setState(() {
       weeklyScores[day] = severityScore;
       keyIndicators[day] = indicators;
@@ -84,30 +162,42 @@ class _StatusState extends State<Status> {
     saveDataToFirestore();
   }
 
-  // Method to determine the category based on the score
-  String getCategory(int score) {
-    if (score <= 9) return "Normal";
-    if (score <= 18) return "Mild";
-    return "Severe";
+  double getPercentageScore(int score) {
+    const int maxScore = 27;
+    return (score / maxScore) * 100;
   }
 
-  // Method to determine the category color
+  String getCategory(int score) {
+    if (score <= 12) return "Severe";
+    if (score <= 20) return "Mild";
+    return "Normal";
+  }
+
   Color getCategoryColor(int score) {
-    if (score <= 9) return Colors.green;
-    if (score <= 18) return Colors.yellow[700]!;
-    return Colors.red;
+    if (score <= 12) return Colors.red;
+    if (score <= 20) return Colors.yellow[700]!;
+    return Colors.green;
   }
 
   @override
   Widget build(BuildContext context) {
     List<String> daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
     int? currentScore = weeklyScores[daysOfWeek[selectedDayIndex]];
+    Map<String, double> currentIndicators =
+        keyIndicators[daysOfWeek[selectedDayIndex]]!;
     String category = getCategory(currentScore!);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mental Health Progress'),
-        backgroundColor: Colors.blueAccent,
+        title: const Text(
+          'Mental Health Progress',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Colors.lightBlueAccent,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -117,7 +207,7 @@ class _StatusState extends State<Status> {
               margin: const EdgeInsets.all(16),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.blueAccent,
+                color: Colors.lightBlueAccent,
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Row(
@@ -135,7 +225,8 @@ class _StatusState extends State<Status> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.blueAccent,
-                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
@@ -149,7 +240,8 @@ class _StatusState extends State<Status> {
                         ),
                       );
                       if (result != null) {
-                        updateKeyIndicators(today, result['severityScore'], result['indicators']);
+                        updateKeyIndicators(today, result['severityScore'],
+                            result['indicators']);
                       }
                     },
                     child: const Text(
@@ -161,53 +253,58 @@ class _StatusState extends State<Status> {
               ),
             ),
             // Today's Severity Score
-            Card(
-              margin: const EdgeInsets.all(16),
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Severity Score",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      currentScore.toString(),
-                      style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                        color: getCategoryColor(currentScore),
+            Container(
+              margin: const EdgeInsets.symmetric(
+                  horizontal: 16, vertical: 8), // Match margins of other cards
+              child: Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Severity Score",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      category,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: getCategoryColor(currentScore),
+                      const SizedBox(height: 16),
+                      Text(
+                        "${getPercentageScore(currentScore).toStringAsFixed(1)}%",
+                        style: TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold,
+                          color: getCategoryColor(currentScore),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      category == "Normal"
-                          ? "Your symptoms are within normal levels. Keep maintaining your healthy habits!"
-                          : category == "Mild"
-                              ? "Your symptoms are mild. Consider some relaxation techniques or reaching out to a friend."
-                              : "Your symptoms are severe. It might help to speak with a counselor or use additional coping strategies.",
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  ],
+                      const SizedBox(height: 8),
+                      Text(
+                        category,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: getCategoryColor(currentScore),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        category == "Normal"
+                            ? "Your symptoms are within normal levels. Keep maintaining your healthy habits!"
+                            : category == "Mild"
+                                ? "Your symptoms are mild. Consider some relaxation techniques or reaching out to a friend."
+                                : "Your symptoms are severe. It might help to speak with a counselor or use additional coping strategies.",
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
+
             // Weekly Progress Chart
             Card(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -222,7 +319,8 @@ class _StatusState extends State<Status> {
                   children: [
                     const Text(
                       'Weekly Progress',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 16),
                     Row(
@@ -239,7 +337,7 @@ class _StatusState extends State<Status> {
                           child: Column(
                             children: [
                               Container(
-                                height: score! * 10.0,
+                                height: getPercentageScore(score!).toDouble(),
                                 width: 20,
                                 decoration: BoxDecoration(
                                   color: index == selectedDayIndex
@@ -259,9 +357,9 @@ class _StatusState extends State<Status> {
                 ),
               ),
             ),
-            // Key Indicators
+            // Key Indicators Card
             Card(
-              margin: const EdgeInsets.all(16),
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               elevation: 5,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15),
@@ -273,27 +371,29 @@ class _StatusState extends State<Status> {
                   children: [
                     const Text(
                       'Key Indicators',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 16),
-                    ...keyIndicators[daysOfWeek[selectedDayIndex]]!.entries.map((entry) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            entry.key,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Slider(
-                            value: entry.value,
-                            min: 0,
-                            max: 3,
-                            onChanged: null, // Read-only slider
-                          ),
-                          const SizedBox(height: 8),
-                        ],
+                    ...currentIndicators.entries.map((entry) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              entry.key,
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w500),
+                            ),
+                            Text(
+                              entry.value.toStringAsFixed(1),
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ],
+                        ),
                       );
-                    }),
+                    }).toList(),
                   ],
                 ),
               ),

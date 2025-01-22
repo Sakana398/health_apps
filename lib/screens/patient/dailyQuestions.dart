@@ -46,9 +46,15 @@ class _DailyQuestionsPageState extends State<DailyQuestionsPage> {
         // Calculate severity score and indicators
         int severityScore = responses.values.reduce((a, b) => a + b);
         Map<String, double> indicators = {
+          "Mood": responses[0]?.toDouble() ?? 0.0,
           "Stress Level": responses[1]?.toDouble() ?? 0.0,
-          "Anxiety": responses[2]?.toDouble() ?? 0.0,
-          "Sleep Quality": responses[3]?.toDouble() ?? 0.0,
+          "Sleep Quality": responses[2]?.toDouble() ?? 0.0,
+          "Energy Level": responses[3]?.toDouble() ?? 0.0,
+          "Social Engagement": responses[4]?.toDouble() ?? 0.0,
+          "Focus": responses[5]?.toDouble() ?? 0.0,
+          "Coping Ability": responses[6]?.toDouble() ?? 0.0,
+          "Sense of Purpose": responses[7]?.toDouble() ?? 0.0,
+          "Physical Activity": responses[8]?.toDouble() ?? 0.0,
         };
         Navigator.pop(context,
             {"severityScore": severityScore, "indicators": indicators});
@@ -62,7 +68,7 @@ class _DailyQuestionsPageState extends State<DailyQuestionsPage> {
       appBar: AppBar(
         title: Text('Daily Questions'),
         backgroundColor: Colors.blueAccent,
-        ),
+      ),
       body: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
@@ -116,7 +122,7 @@ class _DailyQuestionsPageState extends State<DailyQuestionsPage> {
             Slider(
               value: responses[currentQuestionIndex]?.toDouble() ?? 2.0,
               activeColor: Colors.blueAccent, // Active part color
-            inactiveColor: Colors.lightBlueAccent, // Inactive part color
+              inactiveColor: Colors.lightBlueAccent, // Inactive part color
               min: 1,
               max: 3,
               divisions: 2,
@@ -134,7 +140,7 @@ class _DailyQuestionsPageState extends State<DailyQuestionsPage> {
                 currentQuestionIndex == questions.length - 1
                     ? 'Submit'
                     : 'Next Question',
-                    style: TextStyle(color: Colors.blueAccent),
+                style: TextStyle(color: Colors.blueAccent),
               ),
             ),
           ],
