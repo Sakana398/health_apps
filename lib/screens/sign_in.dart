@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:health_apps/helperFunction/sharedpref_helper.dart';
 import 'package:health_apps/screens/register.dart';
 
 class SignIn extends StatefulWidget {
@@ -299,15 +298,6 @@ class _SignInState extends State<SignIn> {
           .doc(user.uid)
           .get();
       var basicInfo = snap.data() as Map<String, dynamic>;
-
-      //isDoctor = basicInfo['type'] == 'doctor' ? true : false;
-
-      // save data to local storage
-      SharedPreferenceHelper().saveUserId(user.uid);
-      // SharedPreferenceHelper().saveProfileUrl(user);
-      SharedPreferenceHelper().saveUserName(basicInfo['name']);
-      SharedPreferenceHelper().saveAccountType(basicInfo['type']== 'doctor'? true :false);
-
       Navigator.of(context)
           .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
     } catch (e) {
