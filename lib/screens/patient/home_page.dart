@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:health_apps/carousel_slider.dart';
 import 'package:health_apps/model/card_model.dart';
+import 'package:health_apps/screens/patient/ChatBot.dart';
 import 'package:health_apps/screens/patient/mentalTraining.dart';
 import 'package:intl/intl.dart';
 import 'package:health_apps/screens/patient/journal.dart';
@@ -220,7 +221,14 @@ class _HomePageState extends State<HomePage> {
                                     builder: (context) => JournalScreen(),
                                   ),
                                 );
-                              } else if (cards[index].doctor == "Clinic") {
+                              }  else if (cards[index].doctor == "ChatBot") {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ChatBot(),
+                                  ),
+                                );
+                              }else if (cards[index].doctor == "Clinic") {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
