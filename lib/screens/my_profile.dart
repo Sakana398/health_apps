@@ -8,7 +8,6 @@ import 'package:health_apps/screens/qr_code_screen.dart';
 
 import 'package:image_picker/image_picker.dart';
 
-
 class MyProfile extends StatefulWidget {
   const MyProfile({super.key});
 
@@ -33,6 +32,7 @@ class _MyProfileState extends State<MyProfile> {
 
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController bioController = TextEditingController();
+  String? phoneError;
 
   Future<void> _getUser() async {
     user = _auth.currentUser!;
@@ -58,6 +58,24 @@ class _MyProfileState extends State<MyProfile> {
   }
 
   Future<void> _updateUserProfile() async {
+    if (!phoneController.text.startsWith('01')) {
+      setState(() {
+        phoneError = 'Invalid phone number. Must start with 01';
+      });
+      return;
+    }
+    if (phoneController.text.length < 10) {
+      setState(() {
+        phoneError = 'Phone number must be at least 10 digits.';
+      });
+      return;
+    }
+    if (phoneController.text.length > 11) {
+      setState(() {
+        phoneError = 'Phone number cannot exceed 11 digits';
+      });
+      return;
+    }
     try {
       await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
         'phone': phoneController.text,
@@ -67,6 +85,9 @@ class _MyProfileState extends State<MyProfile> {
         const SnackBar(content: Text('Profile updated successfully!')),
       );
       _getUser(); // Refresh the data
+      setState(() {
+        phoneError = null;
+      });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to update profile.')),
@@ -187,9 +208,7 @@ class _MyProfileState extends State<MyProfile> {
               // user basic info
               Container(
                 margin: const EdgeInsets.only(left: 15, right: 15),
-                padding: const EdgeInsets.only(left: 20),
-                height: MediaQuery.of(context).size.height / 7,
-                width: MediaQuery.of(context).size.width,
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.blueGrey[50],
@@ -251,12 +270,25 @@ class _MyProfileState extends State<MyProfile> {
                           width: 10,
                         ),
                         Expanded(
-                          child: TextField(
-                            controller: phoneController,
-                            decoration: const InputDecoration(
-                              hintText: 'Phone Number',
-                              border: InputBorder.none,
-                            ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              TextField(
+                                controller: phoneController,
+                                decoration: const InputDecoration(
+                                  hintText: 'Phone Number',
+                                  border: InputBorder.none,
+                                ),
+                              ),
+                              if (phoneError != null)
+                                Text(
+                                  phoneError!,
+                                  style: const TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                            ],
                           ),
                         ),
                       ],
@@ -268,9 +300,7 @@ class _MyProfileState extends State<MyProfile> {
               // user bio
               Container(
                 margin: const EdgeInsets.only(left: 15, right: 15, top: 20),
-                padding: const EdgeInsets.only(left: 20, top: 20),
-                height: MediaQuery.of(context).size.height / 7,
-                width: MediaQuery.of(context).size.width,
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.blueGrey[50],
