@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:health_apps/carousel_slider.dart';
 import 'package:health_apps/model/card_model.dart';
+import 'package:health_apps/screens/patient/ChatBot.dart';
 import 'package:health_apps/screens/patient/mentalTraining.dart';
 import 'package:intl/intl.dart';
 import 'package:health_apps/screens/patient/journal.dart';
@@ -17,13 +19,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   User? user;
-
-  Future<void> _getUser() async {
-    user = _auth.currentUser;
-  }
+  final TextEditingController taskController = TextEditingController();
 
   @override
   void initState() {
@@ -31,27 +30,31 @@ class _HomePageState extends State<HomePage> {
     _getUser();
   }
 
-  // To-Do List tasks
-  List<String> toDoList = [];
+  Future<void> _getUser() async {
+    setState(() {
+      user = _auth.currentUser;
+    });
+  }
 
-  // Controller for the input field
-  final TextEditingController taskController = TextEditingController();
-
-  // Function to add a task to the list
-  void addTask() {
-    if (taskController.text.isNotEmpty) {
-      setState(() {
-        toDoList.add(taskController.text);
-        taskController.clear();
+  Future<void> addTask(String task) async {
+    if (task.isNotEmpty && user != null) {
+      await firestore.collection('users').doc(user!.uid).collection('tasks').add({
+        'task': task,
+        'timestamp': FieldValue.serverTimestamp(),
       });
+      taskController.clear();
     }
   }
 
-  // Function to remove a task from the list
-  void removeTask(int index) {
-    setState(() {
-      toDoList.removeAt(index);
-    });
+  Future<void> removeTask(String taskId) async {
+    if (user != null) {
+      await firestore
+          .collection('users')
+          .doc(user!.uid)
+          .collection('tasks')
+          .doc(taskId)
+          .delete();
+    }
   }
 
   @override
@@ -72,9 +75,9 @@ class _HomePageState extends State<HomePage> {
         }
       },
     );
+
     return Scaffold(
       backgroundColor: Colors.white,
-      key: _scaffoldKey,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         actions: <Widget>[Container()],
@@ -220,6 +223,13 @@ class _HomePageState extends State<HomePage> {
                                     builder: (context) => JournalScreen(),
                                   ),
                                 );
+                              } else if (cards[index].doctor == "ChatBot") {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ChatBot(),
+                                  ),
+                                );
                               } else if (cards[index].doctor == "Clinic") {
                                 Navigator.push(
                                   context,
@@ -227,7 +237,7 @@ class _HomePageState extends State<HomePage> {
                                     builder: (context) => MapsPage(),
                                   ),
                                 );
-                              } 
+                              }
                             },
                             style: ButtonStyle(
                               shape: WidgetStateProperty.all<
@@ -283,7 +293,6 @@ class _HomePageState extends State<HomePage> {
                           fontSize: 18),
                     ),
                   ),
-                  // Input field to add tasks
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
@@ -302,42 +311,71 @@ class _HomePageState extends State<HomePage> {
                         ),
                         const SizedBox(width: 10),
                         ElevatedButton(
-                          onPressed: addTask,
+                          onPressed: () => addTask(taskController.text),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blue[800],
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child: const Text("Add", style: TextStyle(color: Colors.white)
-                          )
+                          child: const Text(
+                            "Add",
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  // Display the To-Do List
-                  ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: toDoList.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        leading: Checkbox(
-                          value: false,
-                          onChanged: (value) {
-                            // For future expansion to mark tasks as complete
-                          },
-                        ),
-                        title: Text(
-                          toDoList[index],
-                          style: GoogleFonts.lato(
-                            fontSize: 16,
-                          ),
-                        ),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () => removeTask(index),
-                        ),
+                  StreamBuilder<QuerySnapshot>(
+                    stream: user != null
+                        ? firestore
+                            .collection('users')
+                            .doc(user!.uid)
+                            .collection('tasks')
+                            .orderBy('timestamp', descending: true)
+                            .snapshots()
+                        : null,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      if (snapshot.hasError) {
+                        return const Center(child: Text("Error loading tasks"));
+                      }
+
+                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                        return const Center(child: Text("No tasks available"));
+                      }
+
+                      return ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          final task = snapshot.data!.docs[index];
+                          final taskId = task.id;
+                          final taskName = task['task'];
+
+                          return ListTile(
+                            leading: Checkbox(
+                              value: false,
+                              onChanged: (value) {
+                                // For future completion functionality
+                              },
+                            ),
+                            title: Text(
+                              taskName,
+                              style: GoogleFonts.lato(
+                                fontSize: 16,
+                              ),
+                            ),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                              onPressed: () => removeTask(taskId),
+                            ),
+                          );
+                        },
                       );
                     },
                   ),

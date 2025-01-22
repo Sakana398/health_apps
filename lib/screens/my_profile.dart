@@ -9,8 +9,6 @@ import 'package:health_apps/screens/qr_code_screen.dart';
 import 'package:image_picker/image_picker.dart';
 
 
-import 'setting.dart';
-
 class MyProfile extends StatefulWidget {
   const MyProfile({super.key});
 
@@ -33,11 +31,14 @@ class _MyProfileState extends State<MyProfile> {
   String image =
       'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png';
 
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController bioController = TextEditingController();
+
   Future<void> _getUser() async {
     user = _auth.currentUser!;
 
     DocumentSnapshot snap = await FirebaseFirestore.instance
-        .collection('patient')
+        .collection('users')
         .doc(user.uid)
         .get();
 
@@ -49,8 +50,33 @@ class _MyProfileState extends State<MyProfile> {
       bio = snapshot['bio'];
       image = snapshot['profilePhoto'] ?? image;
       specialization = snapshot['specialization'];
+
+      phoneController.text = phone ?? '';
+      bioController.text = bio ?? '';
     });
     print(snap.data());
+  }
+
+  Future<void> _updateUserProfile() async {
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+        'phone': phoneController.text,
+        'bio': bioController.text,
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Profile updated successfully!')),
+      );
+      _getUser(); // Refresh the data
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to update profile.')),
+      );
+    }
+  }
+
+  Future<void> _logout() async {
+    await _auth.signOut();
+    Navigator.of(context).pushReplacementNamed('/login');
   }
 
   @override
@@ -90,56 +116,27 @@ class _MyProfileState extends State<MyProfile> {
                           ),
                         ),
                         height: MediaQuery.of(context).size.height / 5,
-                        child: Container(
-                          padding: const EdgeInsets.only(top: 10, right: 7),
+                        child: Align(
                           alignment: Alignment.topRight,
-                          // edit user info button
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.settings,
-                                  color: Colors.white,
-                                  size: 20,
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons.qr_code,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => QRCodeScreen(
+                                    userInfo: {
+                                      'name': name ?? 'Name Not Added',
+                                      'email': email ?? 'Email Not Added',
+                                      'phone': phone ?? 'Phone Not Added',
+                                    },
+                                  ),
                                 ),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const UserSettings(),
-                                    ),
-                                  ).then((value) {
-                                    // reload page
-                                    _getUser();
-                                    setState(() {});
-                                  });
-                                },
-                              ),
-                              // QR code Button
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.qr_code,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => QRCodeScreen(
-                                        userInfo: {
-                                          'name': name ?? 'Name Not Added',
-                                          'email': email ?? 'Email Not Added',
-                                          'phone': phone ?? 'Phone Not Added',
-                                        },
-                                      ),
-                                    ),
-                                  );
-                                },
-                              )
-                            ],
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -253,12 +250,13 @@ class _MyProfileState extends State<MyProfile> {
                         const SizedBox(
                           width: 10,
                         ),
-                        Text(
-                          phone ?? 'Not Added',
-                          style: GoogleFonts.lato(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black54,
+                        Expanded(
+                          child: TextField(
+                            controller: phoneController,
+                            decoration: const InputDecoration(
+                              hintText: 'Phone Number',
+                              border: InputBorder.none,
+                            ),
                           ),
                         ),
                       ],
@@ -297,32 +295,67 @@ class _MyProfileState extends State<MyProfile> {
                         const SizedBox(
                           width: 10,
                         ),
-                        Text(
-                          'Bio',
-                          style: GoogleFonts.lato(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                        Expanded(
+                          child: TextField(
+                            controller: bioController,
+                            decoration: const InputDecoration(
+                              hintText: 'Bio',
+                              border: InputBorder.none,
+                            ),
                           ),
                         ),
                       ],
                     ),
-                    // bio
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.only(top: 10, left: 40),
-                      child: Text(
-                        bio ?? 'Not Added',
-                        style: GoogleFonts.lato(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black38,
-                        ),
-                      ),
-                    )
                   ],
                 ),
               ),
+
+              const SizedBox(
+                height: 30,
+              ),
+
+              // Save Button
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: ElevatedButton(
+                  onPressed: _updateUserProfile,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.indigo,
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    "Save Changes",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                ),
+              ),
+
+              const SizedBox(
+                height: 20,
+              ),
+
+              // Logout Button
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: ElevatedButton(
+                  onPressed: _logout,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    "Logout",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                ),
+              ),
+
               const SizedBox(
                 height: 30,
               ),
@@ -391,14 +424,7 @@ class _MyProfileState extends State<MyProfile> {
       setState(() {
         image = Uri.decodeFull(downloadUrl.toString());
       });
-      /*FirebaseFirestore.instance
-          .collection(isDoctor ? 'doctor' : 'patient')
-          .doc(user.uid)
-          .set({
-        'profilePhoto': downloadUrl,
-      }, SetOptions(merge: true));*/
 
-      // main user data
       FirebaseFirestore.instance.collection('users').doc(user.uid).set({
         'profilePhoto': downloadUrl,
       }, SetOptions(merge: true));
@@ -406,7 +432,7 @@ class _MyProfileState extends State<MyProfile> {
       print("uploaded !!!");
     } catch (e) {
       print(e.toString());
-      print('error occured');
+      print('error occurred');
     }
   }
 }
