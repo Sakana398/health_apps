@@ -12,8 +12,8 @@ class CommunityScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     if (user == null) {
       return Scaffold(
-        appBar: AppBar(title: Text('Community')),
-        body: Center(
+        appBar: AppBar(title: const Text('Community')),
+        body: const Center(
           child: Text('You must be signed in to view this page.'),
         ),
       );
@@ -21,7 +21,7 @@ class CommunityScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Community Chat'),
+        title: const Text('Community Chat'),
       ),
       body: Column(
         children: [
@@ -34,22 +34,31 @@ class CommunityScreen extends StatelessWidget {
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
                 final messages = snapshot.data?.docs ?? [];
                 if (messages.isEmpty) {
-                  return Center(child: Text('No messages yet. Start the conversation!'));
+                  return const Center(
+                    child: Text('No messages yet. Start the conversation!'),
+                  );
                 }
                 return ListView.builder(
                   reverse: true,
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
                     var message = messages[index].data() as Map<String, dynamic>;
+                    String senderName = message['senderName'] ?? 'Unknown';
                     return ListTile(
                       leading: CircleAvatar(
-                        child: Text(message['role'] == 'doctor' ? 'D' : 'P'),
+                        child: Text(
+                          senderName.isNotEmpty
+                              ? senderName[0].toUpperCase()
+                              : 'U',
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        backgroundColor: Colors.blueAccent,
                       ),
-                      title: Text(message['senderName'] ?? 'Unknown'),
+                      title: Text(senderName),
                       subtitle: Text(message['message'] ?? ''),
                       trailing: Text(
                         message['timestamp'] != null
@@ -57,7 +66,7 @@ class CommunityScreen extends StatelessWidget {
                                   message['timestamp'].seconds * 1000)
                                 .toString()
                             : '',
-                        style: TextStyle(fontSize: 10),
+                        style: const TextStyle(fontSize: 10),
                       ),
                     );
                   },
@@ -83,7 +92,7 @@ class CommunityScreen extends StatelessWidget {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.send),
+                  icon: const Icon(Icons.send),
                   onPressed: () async {
                     if (_messageController.text.isNotEmpty) {
                       try {
@@ -91,14 +100,15 @@ class CommunityScreen extends StatelessWidget {
                           'message': _messageController.text.trim(),
                           'senderId': user!.uid,
                           'senderName': user?.displayName ?? 'Anonymous',
-                          'role': await getUserRole(user!.uid),
                           'timestamp': FieldValue.serverTimestamp(),
                         });
                         _messageController.clear();
                       } catch (e) {
                         print('Error sending message: $e');
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Failed to send message. Please try again.')),
+                          const SnackBar(
+                            content: Text('Failed to send message. Please try again.'),
+                          ),
                         );
                       }
                     }
@@ -110,16 +120,5 @@ class CommunityScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  // Fetch User Role from Firestore
-  Future<String> getUserRole(String userId) async {
-    try {
-      final doc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
-      return (doc.data() ?? {})['type'] ?? 'patient';
-    } catch (e) {
-      print('Error fetching user role: $e');
-      return 'patient'; // Default to patient
-    }
   }
 }
