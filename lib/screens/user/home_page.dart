@@ -38,7 +38,11 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> addTask(String task) async {
     if (task.isNotEmpty && user != null) {
-      await firestore.collection('users').doc(user!.uid).collection('tasks').add({
+      await firestore
+          .collection('users')
+          .doc(user!.uid)
+          .collection('tasks')
+          .add({
         'task': task,
         'timestamp': FieldValue.serverTimestamp(),
       });
@@ -80,30 +84,28 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        actions: <Widget>[Container()],
         backgroundColor: Colors.white,
         elevation: 0,
-        title: Container(
-          padding: const EdgeInsets.only(top: 5),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                alignment: Alignment.center,
-                child: Text(
-                  message,
-                  style: GoogleFonts.lato(
-                    color: Colors.black54,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
+        title: Row(
+          children: [
+            Text(
+              'Reflectify', // Replace with your app title
+              style: GoogleFonts.lato(
+                fontSize: 28, // Adjust the font size
+                fontWeight: FontWeight.bold, // Add weight for emphasis
+                color: Colors.black87, // Set text color
               ),
-              const SizedBox(
-                width: 55,
+            ),
+            Spacer(), // Push the message to the right
+            Text(
+              message, // Replace with your dynamic message variable
+              style: GoogleFonts.lato(
+                color: Colors.black54,
+                fontSize: 20,
+                fontWeight: FontWeight.w400,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
         iconTheme: const IconThemeData(
           color: Colors.black,

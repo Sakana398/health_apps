@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:health_apps/screens/user/home_page.dart';
-import 'package:health_apps/screens/user/main_page_patient.dart';
 import 'package:health_apps/screens/skip_main_page.dart';
 
 import 'register.dart';
