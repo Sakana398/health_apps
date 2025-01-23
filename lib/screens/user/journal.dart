@@ -32,6 +32,21 @@ class _JournalScreenState extends State<JournalScreen> {
     }
   }
 
+  Future<void> _deleteJournal(String journalId) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('journals')
+          .doc(journalId)
+          .delete();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Journal deleted successfully!")),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,8 +96,11 @@ class _JournalScreenState extends State<JournalScreen> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) =>
-                            JournalDetailScreen(journal: journal),
+                        builder: (context) => WriteJournalScreen(
+                          journalId: journal.id,
+                          initialTitle: journal['title'],
+                          initialStory: journal['story'],
+                        ),
                       ),
                     );
                   },
@@ -122,7 +140,7 @@ class _JournalScreenState extends State<JournalScreen> {
                         ),
                         const SizedBox(height: 8),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               _formatTimestamp(journal['createdAt']),
@@ -130,6 +148,10 @@ class _JournalScreenState extends State<JournalScreen> {
                                 fontSize: 12,
                                 color: Colors.grey,
                               ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                              onPressed: () => _deleteJournal(journal.id),
                             ),
                           ],
                         ),
@@ -146,7 +168,9 @@ class _JournalScreenState extends State<JournalScreen> {
         backgroundColor: Colors.lightBlueAccent,
         onPressed: () {
           Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const WriteJournalScreen()),
+            MaterialPageRoute(
+              builder: (context) => const WriteJournalScreen(),
+            ),
           );
         },
         child: const Icon(
@@ -159,7 +183,16 @@ class _JournalScreenState extends State<JournalScreen> {
 }
 
 class WriteJournalScreen extends StatefulWidget {
-  const WriteJournalScreen({super.key});
+  final String? journalId;
+  final String? initialTitle;
+  final String? initialStory;
+
+  const WriteJournalScreen({
+    super.key,
+    this.journalId,
+    this.initialTitle,
+    this.initialStory,
+  });
 
   @override
   State<WriteJournalScreen> createState() => _WriteJournalScreenState();
@@ -169,6 +202,15 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _storyController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.journalId != null) {
+      _titleController.text = widget.initialTitle ?? "";
+      _storyController.text = widget.initialStory ?? "";
+    }
+  }
 
   Future<void> _submitJournal() async {
     if (_titleController.text.isEmpty || _storyController.text.isEmpty) {
@@ -182,15 +224,29 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
       final user = FirebaseAuth.instance.currentUser;
 
       if (user != null) {
-        await _firestore
+        final journalRef = _firestore
             .collection('users')
             .doc(user.uid)
-            .collection('journals')
-            .add({
-          'title': _titleController.text,
-          'story': _storyController.text,
-          'createdAt': FieldValue.serverTimestamp(),
-        });
+            .collection('journals');
+
+        if (widget.journalId != null) {
+          // Update existing journal
+          await journalRef.doc(widget.journalId).update({
+            'title': _titleController.text,
+            'story': _storyController.text,
+          });
+        } else {
+          // Add new journal
+          await journalRef.add({
+            'title': _titleController.text,
+            'story': _storyController.text,
+            'createdAt': FieldValue.serverTimestamp(),
+          });
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Journal saved successfully!")),
+        );
 
         Navigator.of(context).pop(); // Go back to the list screen
       } else {
@@ -214,9 +270,9 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          'Write',
-          style: TextStyle(
+        title: Text(
+          widget.journalId != null ? 'Edit Journal' : 'Write Journal',
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -281,51 +337,6 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
                 "Submit",
                 style: TextStyle(color: Colors.white),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class JournalDetailScreen extends StatelessWidget {
-  final QueryDocumentSnapshot journal;
-
-  const JournalDetailScreen({super.key, required this.journal});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          journal['title'] ?? "Untitled",
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: Colors.lightBlueAccent,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              journal['title'] ?? "Untitled",
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              journal['story'] ?? "No story provided.",
-              style: const TextStyle(fontSize: 18),
             ),
           ],
         ),
