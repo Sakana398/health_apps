@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:health_apps/services/ChatBot_service.dart';
+import 'package:health_apps/controller/ChatBot_service.dart';
 
 class ChatBot extends StatefulWidget {
   const ChatBot({super.key});

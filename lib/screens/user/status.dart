@@ -112,14 +112,16 @@ class _StatusState extends State<Status> {
     initializeData();
   }
 
-  void initializeData() async {
+  Future<void> initializeData() async {
     try {
       User? user = auth.currentUser;
       if (user == null) return;
 
       String userId = user.uid;
-      DocumentReference docRef = firestore.collection('user_data').doc(userId);
-      DocumentSnapshot snapshot = await docRef.get();
+      CollectionReference userCollection =
+          firestore.collection('users').doc(userId).collection('status');
+
+      DocumentSnapshot snapshot = await userCollection.doc("data").get();
 
       if (snapshot.exists) {
         setState(() {
@@ -130,7 +132,7 @@ class _StatusState extends State<Status> {
           });
         });
       } else {
-        await docRef.set({
+        await userCollection.doc("data").set({
           'weeklyScores': weeklyScores,
           'keyIndicators': keyIndicators,
         });
@@ -145,7 +147,12 @@ class _StatusState extends State<Status> {
     if (user == null) return;
 
     String userId = user.uid;
-    firestore.collection('user_data').doc(userId).set({
+    firestore
+        .collection('users')
+        .doc(userId)
+        .collection('status')
+        .doc("data")
+        .set({
       'weeklyScores': weeklyScores,
       'keyIndicators': keyIndicators,
     }).catchError((error) {
