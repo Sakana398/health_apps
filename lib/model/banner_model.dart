@@ -15,7 +15,7 @@ List<BannerModel> bannerCards = [
         const Color(0xffa1d4ed),
         const Color(0xffc0eaff),
       ],
-      "assets/414-bg.png"),
+      "assets/siram_otak.png"),
   BannerModel(
       "Happiness is not something ready-made",
       [

@@ -1,12 +1,7 @@
-
-
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:health_apps/model/banner_model.dart';
-import 'package:health_apps/screens/disease.dart';
-import 'package:health_apps/screens/diseasedetail.dart';
 
 class Carouselslider extends StatelessWidget {
   const Carouselslider({super.key});
@@ -20,11 +15,9 @@ class Carouselslider extends StatelessWidget {
         itemCount: bannerCards.length,
         itemBuilder: (context, index, realIndex) {
           return Container(
-            //alignment:  Alignment.centerLeft,
-            //width: MediaQuery.of(context).size.width,
             height: 140,
             margin: const EdgeInsets.only(left: 0, right: 0, bottom: 20),
-            padding: const EdgeInsets.only(left: 0),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               gradient: LinearGradient(
@@ -34,53 +27,40 @@ class Carouselslider extends StatelessWidget {
                 colors: bannerCards[index].cardBackground,
               ),
             ),
-            child: GestureDetector(
-              onTap: () {
-                index == 0
-                    ? Navigator.push(context,
-                        MaterialPageRoute(builder: (BuildContext context) {
-                          // change to quotes page
-                        return const Disease();
-                      }))
-                    : Navigator.push(context,
-                        MaterialPageRoute(builder: (BuildContext context) {
-                          // change to quotes page
-                        return const DiseaseDetail(disease: 'Covid-19');
-                      }));
-              },
-              child: Stack(
-                children: [
-                  Image.asset(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Image.asset(
                     bannerCards[index].image,
-                    //'assets/414.jpg',
-                    fit: BoxFit.fitHeight,
+                    fit: BoxFit.contain,
                   ),
-                  Container(
-                    padding: const EdgeInsets.only(top: 7, right: 5),
-                    alignment: Alignment.center,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          bannerCards[index].text,
-                          //'Check Disease',
-                          style: GoogleFonts.lato(
-                            color: Colors.lightBlue[900],
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
-                        ),
-                        Icon(
-                          Icons.chevron_right_rounded,
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        bannerCards[index].text,
+                        style: GoogleFonts.lato(
                           color: Colors.lightBlue[900],
-                          size: 25,
-                        )
-                      ],
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                        softWrap: true,
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                    Icon(
+                      Icons.chevron_right_rounded,
+                      color: Colors.lightBlue[900],
+                      size: 25,
+                    ),
+                  ],
+                ),
+              ],
             ),
           );
         },
