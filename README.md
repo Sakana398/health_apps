@@ -29,13 +29,9 @@ Built with **Flutter** and **Firebase**, it combines productivity tools (To-Do l
 
 ## 📸 Screenshots
 
-| Home Dashboard | Mental Health Progress | Clinic Locator | Community Chat |
+| **Home Dashboard** | **Mental Health Progress** | **Clinic Locator** | **Community Chat** |
 |:---:|:---:|:---:|:---:|
-| <img width="250" alt="image" src="https://github.com/user-attachments/assets/971ccdb3-f9ef-4326-b576-f1ed60f5d49e" />
- | <img width="250" alt="image" src="https://github.com/user-attachments/assets/42e59ac1-5a70-471b-9274-a7fc936cae97" />
- | <img width="800" height="1280" alt="image" src="https://github.com/user-attachments/assets/bf7a706a-817e-4f7e-b09e-616298d7964e" />
- | <img width="800" height="1280" alt="image" src="https://github.com/user-attachments/assets/15d046d4-ba41-4833-903a-e0199c00c9bd" /> |
-
+| <img src="https://github.com/user-attachments/assets/971ccdb3-f9ef-4326-b576-f1ed60f5d49e" width="250" alt="Home Dashboard" /> | <img src="https://github.com/user-attachments/assets/42e59ac1-5a70-471b-9274-a7fc936cae97" width="250" alt="Mental Health Progress" /> | <img src="https://github.com/user-attachments/assets/bf7a706a-817e-4f7e-b09e-616298d7964e" width="250" alt="Clinic Locator" /> | <img src="https://github.com/user-attachments/assets/15d046d4-ba41-4833-903a-e0199c00c9bd" width="250" alt="Community Chat" /> |
 ## 📂 Project Structure
 
 ```bash
